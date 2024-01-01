@@ -1,0 +1,50 @@
+.result {
+  max-width: 50rem;
+  margin: 2rem auto;
+  padding: 1rem;
+  table-layout: fixed;
+  border-spacing: 1rem;
+  text-align: right;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.result thead {
+  font-size: 0.7rem;
+  color: #83e6c0;
+  text-transform: uppercase;
+}
+
+.result tbody {
+  font-family: "Roboto Condensed", sans-serif;
+  font-size: 0.85rem;
+  color: #c2e9e0;
+}
+
+.result th,
+.result td {
+  border: 1px solid #83e6c0;
+  padding: 8px;
+}
+
+.result th {
+  background-color: #83e6c0;
+  color: #1a1f1d;
+  text-align: center;
+}
+
+.result tbody tr:nth-child(even) {
+  background-color: #1a1f1d;
+}
+
+.result td:last-child {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.result button {
+  margin: 3px 0;
+}

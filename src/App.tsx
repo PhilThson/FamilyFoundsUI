@@ -1,6 +1,6 @@
 import Header from "./components/Header";
 import UserInputArea from "./components/UserInputArea/UserInputArea";
-import Transactions from "./components/Transactions";
+import ResultsArea from "./components/Results/ResultsArea";
 
 function App() {
   return (
@@ -8,7 +8,7 @@ function App() {
       <Header />
       <main>
         <UserInputArea />
-        <Transactions />
+        <ResultsArea />
       </main>
     </>
   );
