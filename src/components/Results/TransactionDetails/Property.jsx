@@ -1,5 +1,7 @@
 import { useState } from "react";
 import styles from "./Property.module.css";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
 
 const Property = ({ name, initialValue, onChangeValue }) => {
   const [value, setValue] = useState(initialValue);
@@ -27,7 +29,7 @@ const Property = ({ name, initialValue, onChangeValue }) => {
             <input type="text" required value={value} onChange={handleChange} />
           )}
           <button onClick={handleEditClick}>
-            {isEditing ? "Save" : "Edit"}
+            {isEditing ? <SaveIcon /> : <EditIcon />}
           </button>
         </span>
       </div>

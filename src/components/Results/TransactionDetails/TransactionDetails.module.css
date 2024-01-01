@@ -4,18 +4,6 @@
   margin: 0;
   max-height: 20rem;
   overflow: scroll;
-  /* display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 2rem; */
-}
-
-.details li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 2px solid #39443f;
-  padding: 0.2rem;
 }
 
 .details.highlight-property li.active {
