@@ -1,5 +1,3 @@
-import React from "react";
-
 const UserInput = ({ id, name, ...props }) => {
   return (
     <div>

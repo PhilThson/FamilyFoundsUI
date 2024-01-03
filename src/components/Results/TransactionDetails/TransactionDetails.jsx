@@ -17,7 +17,7 @@ const TransactionDetails = ({ transaction, onClose }) => {
 
   return (
     <Modal onCloseModal={onClose}>
-      <h2 className={styles.transactionHeader}>Szczegóły transakcji</h2>
+      <h2>Szczegóły transakcji</h2>
       <ul className={styles.details}>
         {Object.keys(transaction).map((propName, index) => (
           <Property
