@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import Transactions from "./Transactions";
 import TransactionDetails from "./TransactionDetails/TransactionDetails";
 
 const ResultsArea = () => {
+  const isResultsVisible = useSelector((state) => state.transactions.isVisible);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
@@ -18,7 +20,7 @@ const ResultsArea = () => {
 
   return (
     <>
-      <Transactions onEditClick={handleEditTransaction} />
+      {isResultsVisible && <Transactions onEditClick={handleEditTransaction} />}
       {isModalOpen && (
         <TransactionDetails
           transaction={selectedTransaction}

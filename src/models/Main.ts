@@ -27,3 +27,8 @@ export class Notification {
 export class NotificationState {
   notification?: Notification;
 }
+
+export class DateRange {
+  startDate?: Date;
+  endDate?: Date;
+}

@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import UserInput from "./UserInput";
 import styles from "./UserInputArea.module.css";
+import { fetchTransactions } from "../../store/transaction-actions";
+import { transactionActions } from "../../store/transaction-slice";
 
 const DUMMY_INPUT = {
   startDate: "2024-01-01",
@@ -8,6 +11,8 @@ const DUMMY_INPUT = {
 };
 
 const UserInputArea = () => {
+  const dispatch = useDispatch();
+  const isResultsVisible = useSelector((state) => state.transactions.isVisible);
   const [dateRange, setDateRange] = useState(DUMMY_INPUT);
   const [isValidRange, setIsValidRange] = useState(true);
 
@@ -23,7 +28,10 @@ const UserInputArea = () => {
   };
 
   const handleSearchClick = () => {
-    console.log("Wyszukiwanie transkacji...");
+    dispatch(fetchTransactions());
+    if (!isResultsVisible) {
+      dispatch(transactionActions.toggle());
+    }
   };
 
   return (

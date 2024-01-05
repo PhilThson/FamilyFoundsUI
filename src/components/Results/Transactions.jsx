@@ -1,8 +1,13 @@
-import { currencyFormatter as formatter } from "../../utils/formatters";
+import { useSelector } from "react-redux";
+import {
+  currencyFormatter as formatter,
+  formatDate,
+} from "../../utils/formatters";
 import { DUMMY_DATA } from "../../utils/dataStub";
 import styles from "./Transactions.module.css";
 
 const Transactions = ({ onEditClick }) => {
+  const transactions = useSelector((state) => state.transactions.transactions);
   return (
     <>
       <table className={styles.result}>
@@ -16,9 +21,9 @@ const Transactions = ({ onEditClick }) => {
           </tr>
         </thead>
         <tbody>
-          {DUMMY_DATA.map((transaction) => (
+          {transactions.map((transaction) => (
             <tr key={transaction.id}>
-              <td>{transaction.date}</td>
+              <td>{formatDate(transaction.date)}</td>
               <td>{transaction.contractor}</td>
               <td>{transaction.title}</td>
               <td>{formatter.format(transaction.amount)}</td>
