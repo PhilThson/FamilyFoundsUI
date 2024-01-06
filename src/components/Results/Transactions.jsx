@@ -3,11 +3,14 @@ import {
   currencyFormatter as formatter,
   formatDate,
 } from "../../utils/formatters";
-import { DUMMY_DATA } from "../../utils/dataStub";
 import styles from "./Transactions.module.css";
 
 const Transactions = ({ onEditClick }) => {
   const transactions = useSelector((state) => state.transactions.transactions);
+  const orderedTransactions = transactions
+    .slice()
+    .sort((a, b) => b.date.localeCompare(a.date));
+
   return (
     <>
       <table className={styles.result}>
@@ -21,7 +24,7 @@ const Transactions = ({ onEditClick }) => {
           </tr>
         </thead>
         <tbody>
-          {transactions.map((transaction) => (
+          {orderedTransactions.map((transaction) => (
             <tr key={transaction.id}>
               <td>{formatDate(transaction.date)}</td>
               <td>{transaction.contractor}</td>

@@ -1,9 +1,9 @@
-export type CreateTransaction = {
-  title?: string | undefined;
-  contractor?: string | undefined;
-  amount?: number | undefined;
-  description?: string | undefined;
-  date?: Date | undefined;
-  postingDate?: Date | undefined;
-  categoryId?: number | undefined;
-};
+export class CreateTransaction {
+  title: string = "";
+  contractor: string = "";
+  amount?: number;
+  description?: string;
+  date?: Date;
+  postingDate?: Date;
+  categoryId?: number;
+}

@@ -13,14 +13,16 @@ export class TransactionState {
   transactions: Transaction[] = [];
   isVisible: boolean = false;
   totalAmount: number = 0.0;
+  status: Status = "idle";
+  error: string | null = null;
 }
 
-export type NotificationStatus = "idle" | "error" | "pending" | "success";
-export type NotificationTitle = "Idle" | "Error" | "Pending" | "Success";
+export type Status = "idle" | "error" | "pending" | "success";
+export type NotificationTitle = "Brak" | "Błąd" | "Ładowanie" | "Sukces";
 
 export class Notification {
-  status: NotificationStatus = "idle";
-  title: NotificationTitle = "Idle";
+  status: Status = "idle";
+  title: NotificationTitle = "Brak";
   message?: string;
 }
 

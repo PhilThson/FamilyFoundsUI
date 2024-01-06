@@ -1,17 +1,18 @@
-import { useState } from "react";
 import Header from "./components/Header/Header";
 import UserInputArea from "./components/UserInputArea/UserInputArea";
 import AddTransactionButton from "./components/AddTransaction/AddTransactionButton";
 import ResultsArea from "./components/Results/ResultsArea";
+import Notification from "./components/UI/Notification";
+import { useSelector } from "react-redux";
+import { RootState } from "./store";
 
 function App() {
-  const [transactions, setTransactions] = useState();
-
-  const handleTransactionsChanged = () => {};
+  const notification = useSelector<RootState>((state) => state.ui.notification);
 
   return (
     <>
       <Header />
+      {notification && <Notification notification={notification} />}
       <main>
         <UserInputArea />
         <AddTransactionButton />

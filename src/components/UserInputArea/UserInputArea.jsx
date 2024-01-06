@@ -1,19 +1,19 @@
 import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
 import UserInput from "./UserInput";
 import styles from "./UserInputArea.module.css";
-import { fetchTransactions } from "../../store/transaction-actions";
-import { transactionActions } from "../../store/transaction-slice";
+import { fetchTransactions, fetchAll } from "../../store/transaction-actions";
+//import { transactionActions } from "../../store/transaction-slice";
 
-const DUMMY_INPUT = {
+const INIT_DATERANGE = {
   startDate: "2024-01-01",
   endDate: "2024-12-31",
 };
 
 const UserInputArea = () => {
-  const dispatch = useDispatch();
-  const isResultsVisible = useSelector((state) => state.transactions.isVisible);
-  const [dateRange, setDateRange] = useState(DUMMY_INPUT);
+  const dispatch = useAppDispatch();
+  //const isResultsVisible = useAppSelector((state) => state.transactions.isVisible);
+  const [dateRange, setDateRange] = useState(INIT_DATERANGE);
   const [isValidRange, setIsValidRange] = useState(true);
 
   const handleInputChange = (e) => {
@@ -28,10 +28,10 @@ const UserInputArea = () => {
   };
 
   const handleSearchClick = () => {
-    dispatch(fetchTransactions());
-    if (!isResultsVisible) {
-      dispatch(transactionActions.toggle());
-    }
+    dispatch(fetchAll());
+    // if (!isResultsVisible) {
+    //   dispatch(transactionActions.toggle());
+    // }
   };
 
   return (

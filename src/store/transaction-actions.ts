@@ -1,7 +1,10 @@
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import { transactionActions } from "./transaction-slice";
 import { uiSliceActions } from "./ui-slice";
 import { TRANSACTIONS_API_URL } from "../settings/constants";
-import { DateRange } from "../models/Main";
+//import { DateRange } from "../models/Main";
+import { client } from "../utils/api-client";
+import { CreateTransaction } from "../models/Create";
 
 const headers = {
   Accept: "application/json",
@@ -31,13 +34,48 @@ export const fetchTransactions = () => {
       dispatch(
         uiSliceActions.showNotification({
           status: "error",
-          title: "Error",
+          title: "Błąd",
           message: "Błąd pobierania transakcji!",
         })
       );
     }
   };
 };
+
+export const fetchAll = createAsyncThunk("transactions/fetchAll", async () => {
+  const response = await client.get(TRANSACTIONS_API_URL);
+  return response.data;
+});
+//<ThunkAction<void, RootState, unknown, UnknownAction>>
+export const addNew = createAsyncThunk(
+  "transactions/addNew",
+  async (transaction: CreateTransaction, { dispatch }) => {
+    try {
+      const response = await client.post(TRANSACTIONS_API_URL, transaction);
+      dispatch(
+        uiSliceActions.showNotification({
+          status: "success",
+          title: "Sukces",
+          message: "Poprawnie zapisano transakcję!",
+        })
+      );
+      return response.data;
+    } catch (err) {
+      dispatch(
+        uiSliceActions.showNotification({
+          status: "error",
+          title: "Błąd",
+          message: "Błąd dodawania transakcji.",
+        })
+      );
+      return Promise.reject(
+        (err as Error)?.message
+          ? (err as Error)?.message
+          : "Wystąpił błąd podczas dodawania transakcji."
+      );
+    }
+  }
+);
 
 // export const sendNewTransaction = (newTransaction) => {
 //   return async (dispatch) => {
