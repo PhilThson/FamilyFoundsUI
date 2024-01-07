@@ -6,7 +6,7 @@
 }
 
 .spinner h4 {
-  margin: 2rem 0 0 0;
+  margin: 1rem 0 0 0;
 }
 
 /* https://projects.lukehaas.me/css-loaders/ , Loader #8 */
@@ -18,7 +18,7 @@
   height: 10em;
 }
 .loader {
-  margin: 30px auto;
+  margin: 10px auto;
   font-size: 10px;
   position: relative;
   text-indent: -9999em;

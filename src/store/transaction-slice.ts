@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { TransactionState, Transaction } from "../models/Main";
-import { fetchAll, addNew } from "./transaction-actions";
+import { fetchAllTransactions, addNewTransaction } from "./transaction-actions";
 
 const initState: TransactionState = {
   transactions: [],
@@ -29,19 +29,19 @@ const transactionSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(fetchAll.pending, (state, action) => {
+      .addCase(fetchAllTransactions.pending, (state, action) => {
         state.status = "pending";
       })
-      .addCase(fetchAll.fulfilled, (state, action) => {
+      .addCase(fetchAllTransactions.fulfilled, (state, action) => {
         state.status = "success";
         state.transactions = action.payload;
         state.totalAmount = getTotalAmount(state.transactions);
       })
-      .addCase(fetchAll.rejected, (state, action) => {
+      .addCase(fetchAllTransactions.rejected, (state, action) => {
         state.status = "error";
         state.error = action.error.message as string;
       })
-      .addCase(addNew.fulfilled, (state, action) => {
+      .addCase(addNewTransaction.fulfilled, (state, action) => {
         state.transactions.push(action.payload);
       });
   },

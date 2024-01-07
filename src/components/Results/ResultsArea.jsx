@@ -25,7 +25,7 @@ const ResultsArea = () => {
   let content;
 
   if (transactionsStatus === "pending") {
-    content = <Spinner text="Ładowanie..." />;
+    content = <Spinner text="Pobieranie transakcji..." />;
   } else if (transactionsStatus === "success") {
     content = (
       <>

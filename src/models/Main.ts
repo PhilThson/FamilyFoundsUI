@@ -34,3 +34,14 @@ export class DateRange {
   startDate?: Date;
   endDate?: Date;
 }
+
+export interface Category {
+  id: number;
+  name: string;
+}
+
+export class CategoryState {
+  categories: Category[] = [];
+  status: Status = "idle";
+  error: string | null = null;
+}

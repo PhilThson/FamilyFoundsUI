@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
+import { useAppDispatch } from "../../hooks/hooks";
 import UserInput from "./UserInput";
 import styles from "./UserInputArea.module.css";
-import { fetchTransactions, fetchAll } from "../../store/transaction-actions";
+import { fetchAllTransactions } from "../../store/transaction-actions";
 //import { transactionActions } from "../../store/transaction-slice";
 
 const INIT_DATERANGE = {
@@ -28,7 +28,7 @@ const UserInputArea = () => {
   };
 
   const handleSearchClick = () => {
-    dispatch(fetchAll());
+    dispatch(fetchAllTransactions());
     // if (!isResultsVisible) {
     //   dispatch(transactionActions.toggle());
     // }

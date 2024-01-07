@@ -11,7 +11,7 @@ function App() {
 
   return (
     <>
-      <Header />
+      <Header title="Fundusze rodzinne" />
       {notification && <Notification notification={notification} />}
       <main>
         <UserInputArea />
