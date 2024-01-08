@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Modal from "../UI/Modal";
 import UserInput from "../UserInputArea/UserInput";
-import Spinner from "../UI/Spinner";
 import styles from "./AddTransactionFrom.module.css";
 import { CreateTransaction } from "../../models/Create";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { addNewTransaction } from "../../store/transaction-actions";
 import { fetchAllCategories } from "../../store/category-actions";
+import CategoriesComboBox from "../Dictionaries/CategoriesComboBox";
 
 const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
   onModalClose,
@@ -18,9 +18,6 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
     (state) => state.transactions.status
   );
   //const transactionError = useAppSelector((state) => state.transactions.error);
-  const categories = useAppSelector((state) => state.categories.categories);
-  const categoriesStatus = useAppSelector((state) => state.categories.status);
-  const categoriesError = useAppSelector((state) => state.categories.error);
 
   const [isValid, setIsValid] = useState<boolean>(true);
   const dispatch = useAppDispatch();
@@ -53,43 +50,6 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
       onModalClose();
     }
   };
-
-  let categoriesComboBox;
-  if (categoriesStatus === "pending") {
-    categoriesComboBox = <Spinner text="Pobieranie kategorii..." size="3rem" />;
-  } else if (categoriesStatus === "success" && categories.length > 0) {
-    const categoryOptions = categories.map((category) => (
-      <option key={category.id} value={category.id}>
-        {category.name}
-      </option>
-    ));
-    categoriesComboBox = (
-      <div>
-        <label htmlFor="categoryId">Kategoria</label>
-        <select
-          id="categoryId"
-          value={transaction.categoryId}
-          onChange={handleChange}
-          onBlur={validateTransaction}
-        >
-          <option value=""></option>
-          {categoryOptions}
-        </select>
-      </div>
-    );
-  } else if (categoriesStatus === "error") {
-    categoriesComboBox = (
-      <div>
-        <p className={styles["info-message"]}>{categoriesError}</p>
-      </div>
-    );
-  } else {
-    categoriesComboBox = (
-      <div>
-        <p className={styles["info-message"]}>Brak kategorii do wybrania</p>
-      </div>
-    );
-  }
 
   return (
     <Modal onCloseModal={onModalClose}>
@@ -150,7 +110,13 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
               onBlur={validateTransaction}
             />
           </div>
-          <div className={styles["input-group"]}>{categoriesComboBox}</div>
+          <div className={styles["input-group"]}>
+            <CategoriesComboBox
+              value={transaction.categoryId}
+              onSelectChange={handleChange}
+              onSelectBlur={validateTransaction}
+            />
+          </div>
         </div>
         {}
         <div className={styles["form-actions"]}>

@@ -39,14 +39,20 @@
   font-size: 1.25rem;
 }
 
-.validation-message {
+.input-group input:focus,
+.input-group select:focus {
+  outline: none;
+  border-color: #e0d4fd;
+}
+
+.error-text {
   color: crimson;
   font-weight: bold;
   font-size: 0.75rem;
   margin-top: 0.25rem;
 }
 
-.info-message {
+.info-text {
   color: #ccc;
   font-weight: bold;
   font-size: 0.75rem;
@@ -73,6 +79,10 @@
 
 .form-actions button:hover {
   background-color: #1e704f;
+}
+
+.form-actions button:active {
+  border-color: #1e704f;
 }
 
 .form-actions button:disabled {

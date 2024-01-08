@@ -56,6 +56,10 @@
   background-color: #1e704f;
 }
 
+.search-button:active {
+  border-color: #1e704f;
+}
+
 .search-button:disabled {
   background-color: #ccc;
   color: #373737;
