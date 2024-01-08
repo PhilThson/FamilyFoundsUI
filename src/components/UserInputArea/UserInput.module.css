@@ -1,9 +1,9 @@
-.invalid select {
+.invalid input {
   border: 1px solid #b40e0e;
   background-color: #fddddd;
 }
 
-.invalid select:focus {
+.invalid input:focus {
   border-color: #ff8800;
   background-color: #fbe8d2;
 }
@@ -13,12 +13,4 @@
   font-weight: bold;
   font-size: 0.75rem;
   margin-top: 0.25rem;
-}
-
-.info-text {
-  color: #ccc;
-  font-weight: bold;
-  font-size: 0.75rem;
-  margin-top: 0.25rem;
-  text-align: center;
 }

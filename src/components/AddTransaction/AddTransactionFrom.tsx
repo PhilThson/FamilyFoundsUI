@@ -14,12 +14,15 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
   const [transaction, setTransaction] = useState<CreateTransaction>(
     new CreateTransaction()
   );
+  const transactionError = useAppSelector((state) => state.transactions.error);
   const transactionStatus = useAppSelector(
     (state) => state.transactions.status
   );
-  //const transactionError = useAppSelector((state) => state.transactions.error);
 
-  const [isValid, setIsValid] = useState<boolean>(true);
+  const [titleIsValid, setTitleIsValid] = useState(true);
+  const [amountIsValid, setAmountIsValid] = useState(true);
+  const [contractorIsValid, setContractorIsValid] = useState(true);
+  const [dateIsValid, setDateIsValid] = useState(true);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -31,11 +34,35 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
     setTransaction((previous) => ({ ...previous, [id]: value }));
   };
 
-  const validateTransaction = () => {
-    if (!transaction) {
-      setIsValid(false);
-    } else {
-      setIsValid(true);
+  const validateTransaction = (event: React.FocusEvent<HTMLElement>) => {
+    console.log(event);
+    const { id, value } = event.target as HTMLInputElement;
+    switch (id) {
+      case "title":
+        if (value.trim() === "") {
+          setTitleIsValid(false);
+        }
+        break;
+      case "amount":
+        const val = value.trim();
+        if (val === "0" || val === "0.0" || val === "") {
+          setAmountIsValid(false);
+        }
+        break;
+      case "contractor":
+        if (value.trim() === "") {
+          setContractorIsValid(false);
+        }
+        break;
+      case "date":
+        const timestamp = Date.parse(value);
+        if (isNaN(timestamp)) {
+          setDateIsValid(false);
+        }
+        break;
+      default:
+        console.log("Brak walidacji elementu o id: ", id);
+        break;
     }
   };
 
@@ -51,6 +78,11 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
     }
   };
 
+  let isTransactionValid = false;
+  if (titleIsValid && amountIsValid && contractorIsValid && dateIsValid) {
+    isTransactionValid = true;
+  }
+
   return (
     <Modal onCloseModal={onModalClose}>
       <h2 className={styles["transaction-header"]}>Dodaj nową transakcję</h2>
@@ -60,6 +92,8 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
             <UserInput
               id="title"
               name="Tytuł"
+              isValid={titleIsValid}
+              errorText="Tytuł jest wymagany"
               type="text"
               value={transaction.title}
               onChange={handleChange}
@@ -68,6 +102,8 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
             <UserInput
               id="amount"
               name="Kwota"
+              isValid={amountIsValid}
+              errorText="Nieprawidłowa wartość kwoty"
               type="number"
               value={transaction.amount}
               onChange={handleChange}
@@ -78,6 +114,8 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
             <UserInput
               id="contractor"
               name="Kontrahent"
+              isValid={contractorIsValid}
+              errorText="Kontrahent jest wymagany"
               type="text"
               value={transaction.contractor}
               onChange={handleChange}
@@ -86,6 +124,8 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
             <UserInput
               id="date"
               name="Data"
+              isValid={dateIsValid}
+              errorText="Nieprawidłowa data"
               type="date"
               value={transaction.date}
               onChange={handleChange}
@@ -118,11 +158,13 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
             />
           </div>
         </div>
-        {}
+        {transactionStatus === "error" && (
+          <p className={styles["error-text"]}>{transactionError}</p>
+        )}
         <div className={styles["form-actions"]}>
           <button
             type="submit"
-            disabled={!isValid || transactionStatus === "pending"}
+            disabled={!isTransactionValid || transactionStatus === "pending"}
           >
             Dodaj
           </button>
