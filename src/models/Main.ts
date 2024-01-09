@@ -13,8 +13,10 @@ export class TransactionState {
   transactions: Transaction[] = [];
   isVisible: boolean = false;
   totalAmount: number = 0.0;
-  status: Status = "idle";
-  error: string | null = null;
+  fetchAllStatus: Status = "idle";
+  fetchAllError: string | null = null;
+  addNewStatus: Status = "idle";
+  addNewError: string | null = null;
 }
 
 export type Status = "idle" | "error" | "pending" | "success";

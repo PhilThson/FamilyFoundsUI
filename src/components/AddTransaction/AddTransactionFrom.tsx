@@ -6,6 +6,12 @@ import { CreateTransaction } from "../../models/Create";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { addNewTransaction } from "../../store/transaction-actions";
 import { fetchAllCategories } from "../../store/category-actions";
+import {
+  stringHasValue,
+  amountHasValue,
+  dateHasValue,
+  newTransactionIsValid,
+} from "../../utils/validators";
 import CategoriesComboBox from "../Dictionaries/CategoriesComboBox";
 
 const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
@@ -14,11 +20,14 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
   const [transaction, setTransaction] = useState<CreateTransaction>(
     new CreateTransaction()
   );
-  const transactionError = useAppSelector((state) => state.transactions.error);
+  const transactionError = useAppSelector(
+    (state) => state.transactions.addNewError
+  );
   const transactionStatus = useAppSelector(
-    (state) => state.transactions.status
+    (state) => state.transactions.addNewStatus
   );
 
+  const [isTouched, setIsTouched] = useState(false);
   const [titleIsValid, setTitleIsValid] = useState(true);
   const [amountIsValid, setAmountIsValid] = useState(true);
   const [contractorIsValid, setContractorIsValid] = useState(true);
@@ -34,29 +43,42 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
     setTransaction((previous) => ({ ...previous, [id]: value }));
   };
 
-  const validateTransaction = (event: React.FocusEvent<HTMLElement>) => {
+  const handleBlur = (event: React.FocusEvent<HTMLElement>) => {
     console.log(event);
+    if (!isTouched) {
+      setIsTouched(true);
+    }
     const { id, value } = event.target as HTMLInputElement;
+    validateTransaction(id, value);
+  };
+
+  const validateTransaction = (id: string, value: string) => {
     switch (id) {
       case "title":
-        if (value.trim() === "") {
+        if (stringHasValue(value)) {
+          setTitleIsValid(true);
+        } else {
           setTitleIsValid(false);
         }
         break;
       case "amount":
-        const val = value.trim();
-        if (val === "0" || val === "0.0" || val === "") {
+        if (amountHasValue(value)) {
+          setAmountIsValid(true);
+        } else {
           setAmountIsValid(false);
         }
         break;
       case "contractor":
-        if (value.trim() === "") {
+        if (stringHasValue(value)) {
+          setContractorIsValid(true);
+        } else {
           setContractorIsValid(false);
         }
         break;
       case "date":
-        const timestamp = Date.parse(value);
-        if (isNaN(timestamp)) {
+        if (dateHasValue(value)) {
+          setDateIsValid(true);
+        } else {
           setDateIsValid(false);
         }
         break;
@@ -66,8 +88,26 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
     }
   };
 
+  let transactionIsValid = false;
+  if (
+    titleIsValid &&
+    amountIsValid &&
+    contractorIsValid &&
+    dateIsValid &&
+    isTouched
+  ) {
+    transactionIsValid = true;
+  }
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    if (!transactionIsValid || !newTransactionIsValid(transaction)) {
+      validateTransaction("title", transaction.title);
+      validateTransaction("amount", transaction.amount);
+      validateTransaction("contractor", transaction.contractor);
+      validateTransaction("date", transaction.date);
+      return;
+    }
     console.log("Sending new transaction...");
     console.log(transaction);
     dispatch(addNewTransaction(transaction!));
@@ -77,11 +117,6 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
       onModalClose();
     }
   };
-
-  let isTransactionValid = false;
-  if (titleIsValid && amountIsValid && contractorIsValid && dateIsValid) {
-    isTransactionValid = true;
-  }
 
   return (
     <Modal onCloseModal={onModalClose}>
@@ -97,7 +132,7 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
               type="text"
               value={transaction.title}
               onChange={handleChange}
-              onBlur={validateTransaction}
+              onBlur={handleBlur}
             />
             <UserInput
               id="amount"
@@ -107,7 +142,7 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
               type="number"
               value={transaction.amount}
               onChange={handleChange}
-              onBlur={validateTransaction}
+              onBlur={handleBlur}
             />
           </div>
           <div className={styles["input-group"]}>
@@ -119,7 +154,7 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
               type="text"
               value={transaction.contractor}
               onChange={handleChange}
-              onBlur={validateTransaction}
+              onBlur={handleBlur}
             />
             <UserInput
               id="date"
@@ -129,7 +164,7 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
               type="date"
               value={transaction.date}
               onChange={handleChange}
-              onBlur={validateTransaction}
+              onBlur={handleBlur}
             />
           </div>
           <div className={styles["input-group"]}>
@@ -139,7 +174,7 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
               type="text"
               value={transaction.description}
               onChange={handleChange}
-              onBlur={validateTransaction}
+              onBlur={handleBlur}
             />
             <UserInput
               id="postingDate"
@@ -147,14 +182,15 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
               type="date"
               value={transaction.postingDate}
               onChange={handleChange}
-              onBlur={validateTransaction}
+              onBlur={handleBlur}
             />
           </div>
           <div className={styles["input-group"]}>
             <CategoriesComboBox
-              value={transaction.categoryId}
+              id="category"
+              value={transaction.category}
               onSelectChange={handleChange}
-              onSelectBlur={validateTransaction}
+              onSelectBlur={handleBlur}
             />
           </div>
         </div>
@@ -164,7 +200,7 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
         <div className={styles["form-actions"]}>
           <button
             type="submit"
-            disabled={!isTransactionValid || transactionStatus === "pending"}
+            disabled={!transactionIsValid || transactionStatus === "pending"}
           >
             Dodaj
           </button>

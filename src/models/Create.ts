@@ -5,7 +5,7 @@ export class CreateTransaction {
   date: string = new Date().toJSON().slice(0, 10);
   description: string = "";
   postingDate?: string = "";
-  categoryId: string = "";
+  category: string = "";
 }
 
 // const month = date.toLocaleString('en-US', {month: 'long'});

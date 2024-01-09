@@ -4,6 +4,7 @@ import styles from "./CategoriesComboBox.module.css";
 import { useAppSelector } from "../../hooks/hooks";
 
 export interface CategoriesComboBoxProps {
+  id: string;
   value: string;
   isValid?: boolean;
   errorText?: string;
@@ -12,6 +13,7 @@ export interface CategoriesComboBoxProps {
 }
 
 const CategoriesComboBox: React.FC<CategoriesComboBoxProps> = ({
+  id,
   value,
   isValid,
   errorText,
@@ -41,9 +43,9 @@ const CategoriesComboBox: React.FC<CategoriesComboBoxProps> = ({
     ));
     categoriesComboBox = (
       <div className={isValid === false ? styles.invalid : ""}>
-        <label htmlFor="categoryId">Kategoria</label>
+        <label htmlFor="category">Kategoria</label>
         <select
-          id="categoryId"
+          id={id}
           value={value}
           onChange={onSelectChange}
           onBlur={handleBlur}

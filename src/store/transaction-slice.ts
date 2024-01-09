@@ -6,8 +6,10 @@ const initState: TransactionState = {
   transactions: [],
   isVisible: false,
   totalAmount: 0.0,
-  status: "idle",
-  error: null,
+  fetchAllStatus: "idle",
+  fetchAllError: null,
+  addNewStatus: "idle",
+  addNewError: null,
 };
 
 const transactionSlice = createSlice({
@@ -29,20 +31,28 @@ const transactionSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(fetchAllTransactions.pending, (state, action) => {
-        state.status = "pending";
-      })
       .addCase(fetchAllTransactions.fulfilled, (state, action) => {
-        state.status = "success";
+        state.fetchAllStatus = "success";
         state.transactions = action.payload;
         state.totalAmount = getTotalAmount(state.transactions);
       })
+      .addCase(fetchAllTransactions.pending, (state, action) => {
+        state.fetchAllStatus = "pending";
+      })
       .addCase(fetchAllTransactions.rejected, (state, action) => {
-        state.status = "error";
-        state.error = action.error.message as string;
+        state.fetchAllStatus = "error";
+        state.fetchAllError = action.error.message as string;
       })
       .addCase(addNewTransaction.fulfilled, (state, action) => {
+        state.addNewStatus = "success";
         state.transactions.push(action.payload);
+      })
+      .addCase(addNewTransaction.pending, (state, action) => {
+        state.addNewStatus = "pending";
+      })
+      .addCase(addNewTransaction.rejected, (state, action) => {
+        state.addNewStatus = "error";
+        state.addNewError = action.error.message as string;
       });
   },
 });

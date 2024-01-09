@@ -8,9 +8,9 @@ const ResultsArea = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const transactionsStatus = useAppSelector(
-    (state) => state.transactions.status
+    (state) => state.transactions.fetchAllStatus
   );
-  const error = useAppSelector((state) => state.transactions.error);
+  const error = useAppSelector((state) => state.transactions.fetchAllError);
 
   const handleEditTransaction = (transaction) => {
     setSelectedTransaction(transaction);
@@ -39,7 +39,7 @@ const ResultsArea = () => {
       </>
     );
   } else if (transactionsStatus === "error") {
-    content = <div>{error}</div>;
+    content = <p>{error}</p>;
   }
 
   return <>{content}</>;
