@@ -1,11 +1,11 @@
-export class Transaction {
-  id?: number;
-  title?: string;
-  contractor?: string;
-  amount: number = 0.0;
+export interface Transaction {
+  id: number;
+  title: string;
+  contractor: string;
+  amount: number;
   description?: string;
-  date?: Date;
-  postingDate?: Date;
+  date: string;
+  postingDate?: string;
   categoryId?: number;
 }
 
@@ -17,6 +17,8 @@ export class TransactionState {
   fetchAllError: string | null = null;
   addNewStatus: Status = "idle";
   addNewError: string | null = null;
+  deleteStatus: Status = "idle";
+  deleteError: string | null = null;
 }
 
 export type Status = "idle" | "error" | "pending" | "success";

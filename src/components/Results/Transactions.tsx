@@ -1,12 +1,23 @@
-import { useSelector } from "react-redux";
 import {
   currencyFormatter as formatter,
   formatDate,
 } from "../../utils/formatters";
 import styles from "./Transactions.module.css";
+import { Transaction } from "../../models/Main";
+import { useAppSelector } from "../../hooks/hooks";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 
-const Transactions = ({ onEditClick }) => {
-  const transactions = useSelector((state) => state.transactions.transactions);
+interface TransactionListProps {
+  onEditClick: (transaction: Transaction) => void;
+  onDeleteClick: (transaction: Transaction) => void;
+}
+
+const Transactions: React.FC<TransactionListProps> = (props) => {
+  const { onEditClick, onDeleteClick } = props;
+  const transactions = useAppSelector(
+    (state) => state.transactions.transactions
+  );
   const orderedTransactions = transactions
     .slice()
     .sort((a, b) => b.date.localeCompare(a.date));
@@ -31,8 +42,18 @@ const Transactions = ({ onEditClick }) => {
               <td>{transaction.title}</td>
               <td>{formatter.format(transaction.amount)}</td>
               <td>
-                <button onClick={() => onEditClick(transaction)}>Edytuj</button>
-                <button>Usuń</button>
+                <button
+                  className={styles.editButton}
+                  onClick={() => onEditClick(transaction)}
+                >
+                  {<EditIcon />}
+                </button>
+                <button
+                  className={styles.deleteButton}
+                  onClick={() => onDeleteClick(transaction)}
+                >
+                  {<DeleteIcon />}
+                </button>
               </td>
             </tr>
           ))}

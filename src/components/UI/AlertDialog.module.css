@@ -1,0 +1,63 @@
+.alert {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  width: 80%;
+  max-width: 30rem;
+  background-color: white;
+  padding: 1rem;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  z-index: 30;
+  animation: scale-in 300ms ease-out forwards;
+}
+
+@keyframes scale-in {
+  from {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 20;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1rem;
+}
+
+.buttonContainer button {
+  padding: 0.5rem 5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 8px;
+  border: none;
+}
+
+.buttonContainer button:first-child {
+  background-color: #1e704f;
+  color: white;
+}
+
+.buttonContainer button:last-child {
+  background-color: #ff5252;
+  color: #373737;
+}
+
+.buttonContainer button:hover {
+  opacity: 0.8;
+}

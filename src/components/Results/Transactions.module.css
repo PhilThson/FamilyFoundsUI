@@ -49,4 +49,16 @@
   margin: 3px 0;
   padding: 0.25rem 0.5rem;
   cursor: pointer;
+  background-color: transparent;
+  border: none;
+}
+
+.editButton {
+  /* color: linear-gradient(#5452ff, #312efd); */
+  color: #5452ff;
+}
+
+.deleteButton {
+  /* color: linear-gradient(#ff7373, #ff5454); */
+  color: #ff7373;
 }

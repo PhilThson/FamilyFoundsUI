@@ -1,6 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { TransactionState, Transaction } from "../models/Main";
-import { fetchAllTransactions, addNewTransaction } from "./transaction-actions";
+import {
+  fetchAllTransactions,
+  addNewTransaction,
+  deleteTransaction,
+} from "./transaction-actions";
 
 const initState: TransactionState = {
   transactions: [],
@@ -10,6 +14,8 @@ const initState: TransactionState = {
   fetchAllError: null,
   addNewStatus: "idle",
   addNewError: null,
+  deleteStatus: "idle",
+  deleteError: null,
 };
 
 const transactionSlice = createSlice({
@@ -53,6 +59,15 @@ const transactionSlice = createSlice({
       .addCase(addNewTransaction.rejected, (state, action) => {
         state.addNewStatus = "error";
         state.addNewError = action.error.message as string;
+      })
+      .addCase(deleteTransaction.fulfilled, (state, action) => {
+        state.deleteStatus = "success";
+        state.transactions = state.transactions.filter(
+          (t) => t.id !== action.payload
+        );
+      })
+      .addCase(deleteTransaction.rejected, (state, action) => {
+        state.deleteStatus = "error";
       });
   },
 });

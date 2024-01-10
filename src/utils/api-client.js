@@ -19,8 +19,12 @@ export async function client(endpoint, { body, ...customConfig } = {}) {
 
   let data
   try {
-    const response = await window.fetch(endpoint, config)
-    data = await response.json()
+    const response = await window.fetch(endpoint, config);
+    try {
+      data = await response.json();
+    } catch (err) {
+      console.log("No data from HTTP Response");
+    }
     if (response.ok) {
       return {
         status: response.status,
@@ -36,9 +40,13 @@ export async function client(endpoint, { body, ...customConfig } = {}) {
 }
 
 client.get = function (endpoint, customConfig = {}) {
-  return client(endpoint, { ...customConfig, method: 'GET' })
+  return client(endpoint, { ...customConfig, method: 'GET' });
 }
 
 client.post = function (endpoint, body, customConfig = {}) {
-  return client(endpoint, { ...customConfig, body })
+  return client(endpoint, { ...customConfig, body });
+}
+
+client.delete = function (endpoint, customConfig = {}) {
+  return client(endpoint, { ...customConfig, method: "DELETE" });
 }
