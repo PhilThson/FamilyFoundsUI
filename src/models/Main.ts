@@ -39,6 +39,11 @@ export class DateRange {
   endDate?: Date;
 }
 
+export interface IDateRange {
+  startDate: string;
+  endDate: string;
+}
+
 export interface Category {
   id: number;
   name: string;

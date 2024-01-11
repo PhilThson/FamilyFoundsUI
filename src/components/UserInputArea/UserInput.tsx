@@ -7,6 +7,7 @@ interface InputGroupProps extends ComponentProps<"input"> {
   name: string;
   isValid?: boolean;
   errorText?: string;
+  classes?: string;
   onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
@@ -15,6 +16,7 @@ const UserInput: React.FC<InputGroupProps> = ({
   name,
   isValid,
   errorText,
+  classes,
   onBlur,
   ...rest
 }) => {
@@ -27,7 +29,7 @@ const UserInput: React.FC<InputGroupProps> = ({
   };
 
   return (
-    <div className={isValid === false ? styles.invalid : ""}>
+    <div className={isValid ? "" : classes}>
       <label htmlFor={id}>{name}</label>
       <input id={id} onBlur={handleBlur} {...rest} />
       {isValid === false && <p className={styles["error-text"]}>{errorText}</p>}

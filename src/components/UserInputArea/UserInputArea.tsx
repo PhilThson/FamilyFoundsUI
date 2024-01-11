@@ -3,9 +3,10 @@ import { useAppDispatch } from "../../hooks/hooks";
 import UserInput from "./UserInput";
 import styles from "./UserInputArea.module.css";
 import { fetchAllTransactions } from "../../store/transaction-actions";
+import { IDateRange } from "../../models/Main";
 //import { transactionActions } from "../../store/transaction-slice";
 
-const INIT_DATERANGE = {
+const INIT_DATERANGE: IDateRange = {
   startDate: "2024-01-01",
   endDate: "2024-12-31",
 };
@@ -16,8 +17,8 @@ const UserInputArea = () => {
   const [dateRange, setDateRange] = useState(INIT_DATERANGE);
   const [isValidRange, setIsValidRange] = useState(true);
 
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
+  const handleInputChange = (e: React.ChangeEvent) => {
+    const { id, value } = e.target as HTMLInputElement;
     setDateRange((prev) => ({ ...prev, [id]: value }));
   };
 
