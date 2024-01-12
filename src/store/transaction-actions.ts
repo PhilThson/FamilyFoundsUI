@@ -3,7 +3,7 @@ import { uiSliceActions } from "./ui-slice";
 import { TRANSACTIONS_API_URL } from "../settings/constants";
 //import { DateRange } from "../models/Main";
 import { client } from "../utils/api-client";
-import { CreateTransaction } from "../models/Create";
+import { CreateTransactionDto } from "../models/Create";
 import { AppDispatch } from ".";
 
 //dateRange: DateRange
@@ -26,7 +26,7 @@ export const fetchAllTransactions = createAsyncThunk(
 //<ThunkAction<void, RootState, unknown, UnknownAction>>
 export const addNewTransaction = createAsyncThunk(
   "transactions/addNewTransaction",
-  async (transaction: CreateTransaction, { dispatch }) => {
+  async (transaction: CreateTransactionDto, { dispatch }) => {
     try {
       const response = await client.post(TRANSACTIONS_API_URL, transaction);
       dispatch(

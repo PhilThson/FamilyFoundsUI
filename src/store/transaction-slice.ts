@@ -34,6 +34,10 @@ const transactionSlice = createSlice({
     toggle(state) {
       state.isVisible = !state.isVisible;
     },
+    resetNewTransactionStatus(state) {
+      state.addNewStatus = "idle";
+      state.addNewError = null;
+    },
   },
   extraReducers(builder) {
     builder

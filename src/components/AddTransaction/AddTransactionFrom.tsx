@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Modal from "../UI/Modal";
 import UserInput from "../UserInputArea/UserInput";
 import styles from "./AddTransactionFrom.module.css";
-import { CreateTransaction } from "../../models/Create";
+import { CreateTransaction, CreateTransactionDto } from "../../models/Create";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { addNewTransaction } from "../../store/transaction-actions";
 import { fetchAllCategories } from "../../store/category-actions";
@@ -108,14 +108,14 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
       validateTransaction("date", transaction.date);
       return;
     }
-    console.log("Sending new transaction...");
-    console.log(transaction);
-    dispatch(addNewTransaction(transaction!));
+    const transactionToSend: CreateTransactionDto = {
+      ...transaction,
+      description: transaction.description || undefined,
+      postingDate: transaction.postingDate || undefined,
+      category: transaction.category || undefined,
+    };
 
-    if (transactionStatus === "success") {
-      setTransaction(new CreateTransaction());
-      onModalClose();
-    }
+    dispatch(addNewTransaction(transactionToSend));
   };
 
   return (
@@ -128,7 +128,7 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
               id="title"
               name="Tytuł"
               isValid={titleIsValid}
-              classes={styles.invalid}
+              invalidClass={styles.invalid}
               errorText="Tytuł jest wymagany"
               type="text"
               value={transaction.title}
@@ -139,7 +139,7 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
               id="amount"
               name="Kwota"
               isValid={amountIsValid}
-              classes={styles.invalid}
+              invalidClass={styles.invalid}
               errorText="Nieprawidłowa wartość kwoty"
               type="number"
               value={transaction.amount}
@@ -152,7 +152,7 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
               id="contractor"
               name="Kontrahent"
               isValid={contractorIsValid}
-              classes={styles.invalid}
+              invalidClass={styles.invalid}
               errorText="Kontrahent jest wymagany"
               type="text"
               value={transaction.contractor}
@@ -163,7 +163,7 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
               id="date"
               name="Data"
               isValid={dateIsValid}
-              classes={styles.invalid}
+              invalidClass={styles.invalid}
               errorText="Nieprawidłowa data"
               type="date"
               value={transaction.date}

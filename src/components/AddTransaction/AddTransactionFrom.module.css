@@ -49,12 +49,14 @@
 .invalid select {
   border: 1px solid #b40e0e;
   background-color: #fddddd;
+  color: #373737;
 }
 
 .invalid input:focus,
 .invalid select:focus {
   border-color: #ff8800;
   background-color: #fbe8d2;
+  color: #373737;
 }
 
 .info-text {
