@@ -1,8 +1,9 @@
 import { CreateTransaction } from "../models/Create";
 
-export const stringHasValue = (value: string) => value.trim() !== "" && value;
+export const stringHasValue = (value: string): boolean =>
+  value ? true : false;
 
-export const amountHasValue = (value: string) => {
+export const amountHasValue = (value: string): boolean => {
   const val = value.trim();
   return val !== "0" && val !== "0.0" && val !== "";
 };

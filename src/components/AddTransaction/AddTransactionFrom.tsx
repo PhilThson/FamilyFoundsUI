@@ -55,32 +55,16 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
   const validateTransaction = (id: string, value: string) => {
     switch (id) {
       case "title":
-        if (stringHasValue(value)) {
-          setTitleIsValid(true);
-        } else {
-          setTitleIsValid(false);
-        }
+        setTitleIsValid(stringHasValue(value));
         break;
       case "amount":
-        if (amountHasValue(value)) {
-          setAmountIsValid(true);
-        } else {
-          setAmountIsValid(false);
-        }
+        setAmountIsValid(amountHasValue(value));
         break;
       case "contractor":
-        if (stringHasValue(value)) {
-          setContractorIsValid(true);
-        } else {
-          setContractorIsValid(false);
-        }
+        setContractorIsValid(stringHasValue(value));
         break;
       case "date":
-        if (dateHasValue(value)) {
-          setDateIsValid(true);
-        } else {
-          setDateIsValid(false);
-        }
+        setDateIsValid(dateHasValue(value));
         break;
       default:
         console.log("Brak walidacji elementu o id: ", id);
