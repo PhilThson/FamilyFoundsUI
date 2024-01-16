@@ -3,14 +3,14 @@ import {
   formatDate,
 } from "../../utils/formatters";
 import styles from "./Transactions.module.css";
-import { Transaction } from "../../models/Main";
+import { ITransaction } from "../../models/Main";
 import { useAppSelector } from "../../hooks/hooks";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
 interface TransactionListProps {
-  onEditClick: (transaction: Transaction) => void;
-  onDeleteClick: (transaction: Transaction) => void;
+  onEditClick: (transaction: ITransaction) => void;
+  onDeleteClick: (transaction: ITransaction) => void;
 }
 
 const Transactions: React.FC<TransactionListProps> = (props) => {

@@ -3,7 +3,7 @@ import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
 import Transactions from "./Transactions";
 import TransactionDetails from "./TransactionDetails/TransactionDetails";
 import Spinner from "../UI/Spinner";
-import { Transaction } from "../../models/Main";
+import { ITransaction } from "../../models/Main";
 import { deleteTransaction } from "../../store/transaction-actions";
 import AlertDialog from "../UI/AlertDialog";
 
@@ -11,19 +11,19 @@ const ResultsArea: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] =
-    useState<Transaction | null>(null);
+    useState<ITransaction | null>(null);
   const transactionsStatus = useAppSelector(
     (state) => state.transactions.fetchAllStatus
   );
   const error = useAppSelector((state) => state.transactions.fetchAllError);
   const dispatch = useAppDispatch();
 
-  const handleEditTransaction = (transaction: Transaction) => {
+  const handleEditTransaction = (transaction: ITransaction) => {
     setSelectedTransaction(transaction);
     setIsModalOpen(true);
   };
 
-  const handleDeleteTransaction = (transaction: Transaction) => {
+  const handleDeleteTransaction = (transaction: ITransaction) => {
     setSelectedTransaction(transaction);
     setIsAlertOpen(true);
   };
@@ -61,7 +61,7 @@ const ResultsArea: React.FC = () => {
           onEditClick={handleEditTransaction}
           onDeleteClick={handleDeleteTransaction}
         />
-        {isModalOpen && (
+        {isModalOpen && selectedTransaction && (
           <TransactionDetails
             transaction={selectedTransaction}
             onClose={handleCloseModal}

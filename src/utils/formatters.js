@@ -5,7 +5,8 @@ export const currencyFormatter = new Intl.NumberFormat('pl-PL', {
   maximumFractionDigits: 2,
 });
 
-export function formatDate(dateTime) {
+export const formatDate = (dateTime) => {
+  if (!isDateValid(dateTime)) return dateTime;
   const parsedDate = new Date(dateTime);
   const formattedDate = new Intl.DateTimeFormat('pl-PL', {
     year: 'numeric',
@@ -14,4 +15,8 @@ export function formatDate(dateTime) {
   }).format(parsedDate);
 
   return formattedDate;
+}
+
+const isDateValid = (dateStr) => {
+  return !isNaN(new Date(dateStr));
 }

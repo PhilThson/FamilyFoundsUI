@@ -1,4 +1,4 @@
-export interface Transaction {
+export interface ITransaction {
   id: number;
   title: string;
   contractor: string;
@@ -6,11 +6,11 @@ export interface Transaction {
   description?: string;
   date: string;
   postingDate?: string;
-  categoryId?: number;
+  category?: ICategory;
 }
 
 export class TransactionState {
-  transactions: Transaction[] = [];
+  transactions: ITransaction[] = [];
   isVisible: boolean = false;
   totalAmount: number = 0.0;
   fetchAllStatus: Status = "idle";
@@ -44,13 +44,13 @@ export interface IDateRange {
   endDate: string;
 }
 
-export interface Category {
+export interface ICategory {
   id: number;
   name: string;
 }
 
 export class CategoryState {
-  categories: Category[] = [];
+  categories: ICategory[] = [];
   status: Status = "idle";
   error: string | null = null;
 }

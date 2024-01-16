@@ -1,0 +1,60 @@
+.property {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #39443f;
+  padding: 0.5rem;
+}
+
+.property-name {
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.property-value {
+  display: inline-block;
+  width: 10rem;
+  font-size: 1rem;
+  color: white;
+  border-radius: 4px;
+  text-overflow: ellipsis;
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.property select {
+  font: inherit;
+  font-size: 1rem;
+  width: 10rem;
+  border: 1px solid #39443f;
+  padding: 0.5rem;
+  animation: pulse-text 2s infinite;
+  background-color: transparent;
+  text-align: center;
+  border-radius: 4px;
+}
+
+.invalid select {
+  border: 1px solid #b40e0e;
+  background-color: #fddddd;
+}
+
+.invalid select:focus {
+  border-color: #ff8800;
+  background-color: #fbe8d2;
+}
+
+.error-text {
+  color: crimson;
+  font-weight: bold;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.info-text {
+  color: #ccc;
+  font-weight: bold;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  text-align: center;
+}

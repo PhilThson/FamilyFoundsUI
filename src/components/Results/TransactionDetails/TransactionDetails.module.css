@@ -48,13 +48,18 @@
 
 .actions button:hover,
 .actions button:active {
-  background-color: #1a1f1d;
+  background-color: #003e25;
   border-color: #39443f;
   color: white;
 }
 
+.actions .button-close:hover,
+.actions .button-close:active {
+  background-color: #6b2323;
+}
+
 .actions .button-close {
-  color: #39443f;
+  color: #1d2320;
 }
 
 .actions .button-save {

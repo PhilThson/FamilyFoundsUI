@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { TransactionState, Transaction } from "../models/Main";
+import { TransactionState, ITransaction } from "../models/Main";
 import {
   fetchAllTransactions,
   addNewTransaction,
@@ -24,7 +24,7 @@ const transactionSlice = createSlice({
   reducers: {
     setTransactionList(
       state,
-      action: { payload: Transaction[]; type: string }
+      action: { payload: ITransaction[]; type: string }
     ) {
       if (action.payload && action.payload.length > 0) {
         state.transactions = action.payload;
@@ -76,7 +76,7 @@ const transactionSlice = createSlice({
   },
 });
 
-const getTotalAmount = (items: Transaction[]) =>
+const getTotalAmount = (items: ITransaction[]) =>
   items.reduce((acc, curr) => (acc += curr.amount), 0);
 
 export const transactionActions = transactionSlice.actions;

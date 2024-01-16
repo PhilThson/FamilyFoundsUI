@@ -37,13 +37,13 @@ const CategoriesComboBox: React.FC<CategoriesComboBoxProps> = ({
     categoriesComboBox = <Spinner text="Pobieranie kategorii..." size="3rem" />;
   } else if (categoriesStatus === "success" && categories.length > 0) {
     const categoryOptions = categories.map((category) => (
-      <option key={category.id} value={category.id}>
+      <option key={category.id} value={category.name}>
         {category.name}
       </option>
     ));
     categoriesComboBox = (
       <div className={isValid === false ? styles.invalid : ""}>
-        <label htmlFor="category">Kategoria</label>
+        <label htmlFor={id}>Kategoria</label>
         <select
           id={id}
           value={value}
