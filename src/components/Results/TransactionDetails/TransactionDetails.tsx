@@ -5,6 +5,8 @@ import Property from "./Property";
 import { ITransaction } from "../../../models/Main";
 import CategoryProperty from "./CategoryProperty";
 import { UpdateTransactionDto } from "../../../models/Update";
+import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
+import { updateTransaction } from "../../../store/transaction-actions";
 
 interface ITransactionDetailsProps {
   transaction: ITransaction;
@@ -15,6 +17,13 @@ const TransactionDetails: React.FC<ITransactionDetailsProps> = ({
   transaction,
   onClose,
 }) => {
+  const dispatch = useAppDispatch();
+  const updateTransactionStatus = useAppSelector(
+    (state) => state.transactions.updateStatus
+  );
+  const updateTransactionError = useAppSelector(
+    (state) => state.transactions.updateError
+  );
   const [updatedTransaction, setUpdatedTransaction] =
     useState<UpdateTransactionDto>({
       id: transaction.id,
@@ -33,7 +42,14 @@ const TransactionDetails: React.FC<ITransactionDetailsProps> = ({
 
   const handleSaveTransaction = () => {
     console.log("Saving transaction...");
-    console.log(updatedTransaction);
+    const transactionToSend: UpdateTransactionDto = {
+      ...updatedTransaction,
+      description: updatedTransaction.description || undefined,
+      postingDate: updatedTransaction.postingDate || undefined,
+      category: updatedTransaction.category || undefined,
+    };
+    console.log(transactionToSend);
+    dispatch(updateTransaction(transactionToSend));
   };
 
   return (
@@ -85,6 +101,9 @@ const TransactionDetails: React.FC<ITransactionDetailsProps> = ({
           onValueChange={handlePropertyChange}
         />
       </ul>
+      {updateTransactionStatus === "error" && (
+        <p className={styles["error-text"]}>{updateTransactionError}</p>
+      )}
       <div className={styles.actions}>
         <button className={styles["button-close"]} onClick={onClose}>
           Zamknij
@@ -92,6 +111,7 @@ const TransactionDetails: React.FC<ITransactionDetailsProps> = ({
         <button
           className={styles["button-save"]}
           onClick={handleSaveTransaction}
+          disabled={updateTransactionStatus === "pending"}
         >
           Zapisz
         </button>

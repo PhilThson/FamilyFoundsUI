@@ -5,6 +5,8 @@ import { TRANSACTIONS_API_URL } from "../settings/constants";
 import { client } from "../utils/api-client";
 import { CreateTransactionDto } from "../models/Create";
 import { AppDispatch } from ".";
+import { UpdateTransactionDto } from "../models/Update";
+import { ITransaction } from "../models/Main";
 
 //dateRange: DateRange
 
@@ -43,6 +45,41 @@ export const addNewTransaction = createAsyncThunk(
           status: "error",
           title: "Błąd",
           message: "Błąd dodawania transakcji.",
+        })
+      );
+      return Promise.reject(
+        (err as Error)?.message
+          ? (err as Error)?.message
+          : "Wystąpił błąd podczas dodawania transakcji."
+      );
+    }
+  }
+);
+
+export const updateTransaction = createAsyncThunk(
+  // <
+  //   UpdateTransactionDto,
+  //   ITransaction,
+  //   { dispatch: AppDispatch }
+  // >
+  "transactions/updateTransaction",
+  async (transaction: UpdateTransactionDto, { dispatch }) => {
+    try {
+      const response = await client.put(TRANSACTIONS_API_URL, transaction);
+      dispatch(
+        uiSliceActions.showNotification({
+          status: "success",
+          title: "Sukces",
+          message: "Poprawnie zapisano transakcję!",
+        })
+      );
+      return response.data as ITransaction;
+    } catch (err) {
+      dispatch(
+        uiSliceActions.showNotification({
+          status: "error",
+          title: "Błąd",
+          message: "Błąd aktualizowania transakcji.",
         })
       );
       return Promise.reject(

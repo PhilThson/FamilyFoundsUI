@@ -66,3 +66,10 @@
   background-color: #39443f;
   color: white;
 }
+
+.error-text {
+  color: crimson;
+  font-weight: bold;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}

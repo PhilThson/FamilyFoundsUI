@@ -17,6 +17,8 @@ export class TransactionState {
   fetchAllError: string | null = null;
   addNewStatus: Status = "idle";
   addNewError: string | null = null;
+  updateStatus: Status = "idle";
+  updateError: string | null = null;
   deleteStatus: Status = "idle";
   deleteError: string | null = null;
 }

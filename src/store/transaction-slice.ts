@@ -3,6 +3,7 @@ import { TransactionState, ITransaction } from "../models/Main";
 import {
   fetchAllTransactions,
   addNewTransaction,
+  updateTransaction,
   deleteTransaction,
 } from "./transaction-actions";
 
@@ -14,6 +15,8 @@ const initState: TransactionState = {
   fetchAllError: null,
   addNewStatus: "idle",
   addNewError: null,
+  updateStatus: "idle",
+  updateError: null,
   deleteStatus: "idle",
   deleteError: null,
 };
@@ -63,6 +66,24 @@ const transactionSlice = createSlice({
       .addCase(addNewTransaction.rejected, (state, action) => {
         state.addNewStatus = "error";
         state.addNewError = action.error.message as string;
+      })
+      .addCase(
+        updateTransaction.fulfilled,
+        (state, action: { payload: ITransaction; type: string }) => {
+          state.updateStatus = "success";
+          let newTransactionsList = state.transactions.filter(
+            (t) => t.id !== action.payload.id
+          );
+          newTransactionsList.push(action.payload);
+          state.transactions = newTransactionsList;
+        }
+      )
+      .addCase(updateTransaction.pending, (state, action) => {
+        state.updateStatus = "pending";
+      })
+      .addCase(updateTransaction.rejected, (state, action) => {
+        state.updateStatus = "error";
+        state.updateError = action.error.message as string;
       })
       .addCase(deleteTransaction.fulfilled, (state, action) => {
         state.deleteStatus = "success";
