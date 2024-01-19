@@ -120,3 +120,30 @@ export const deleteTransaction = createAsyncThunk<
     );
   }
 });
+
+export const importTransactionsFromCsv = createAsyncThunk(
+  "transactions/importTransactionsFromCsv",
+  async (formData: FormData, { dispatch }) => {
+    try {
+      const response = await client.post(
+        `${TRANSACTIONS_API_URL}/import`,
+        formData,
+        true //isForm
+      );
+      return response.data;
+    } catch (err) {
+      dispatch(
+        uiSliceActions.showNotification({
+          status: "error",
+          title: "Błąd",
+          message: "Błąd importowania listy transakcji.",
+        })
+      );
+      return Promise.reject(
+        (err as Error)?.message
+          ? (err as Error)?.message
+          : "Wystąpił błąd podczas importowania listy transakcji."
+      );
+    }
+  }
+);

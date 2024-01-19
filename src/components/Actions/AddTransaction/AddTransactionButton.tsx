@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styles from "./AddTransactionButton.module.css";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import AddTransactionFrom from "./AddTransactionFrom";
+import AddTransactionForm from "./AddTransactionForm";
 
 const AddTransactionButton: React.FC = () => {
   const [isTransactionVisible, setIsTransactionVisible] = useState(false);
@@ -16,17 +16,15 @@ const AddTransactionButton: React.FC = () => {
 
   return (
     <>
-      <div className={styles["button-container"]}>
-        <button
-          className={styles["add-button"]}
-          onClick={handleAddTransactionClick}
-        >
-          <AddCircleOutlineIcon />
-          <span>Dodaj transakcję</span>
-        </button>
-      </div>
+      <button
+        className={styles["add-button"]}
+        onClick={handleAddTransactionClick}
+      >
+        <AddCircleOutlineIcon />
+        <span>Dodaj transakcję</span>
+      </button>
       {isTransactionVisible && (
-        <AddTransactionFrom onModalClose={handleCloseTransaction} />
+        <AddTransactionForm onModalClose={handleCloseTransaction} />
       )}
     </>
   );

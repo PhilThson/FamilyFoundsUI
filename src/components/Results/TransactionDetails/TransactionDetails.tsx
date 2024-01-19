@@ -19,10 +19,10 @@ const TransactionDetails: React.FC<ITransactionDetailsProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const updateTransactionStatus = useAppSelector(
-    (state) => state.transactions.updateStatus
+    (state) => state.transactions.updateState.status
   );
   const updateTransactionError = useAppSelector(
-    (state) => state.transactions.updateError
+    (state) => state.transactions.updateState.error
   );
   const [updatedTransaction, setUpdatedTransaction] =
     useState<UpdateTransactionDto>({

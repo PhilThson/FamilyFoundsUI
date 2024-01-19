@@ -1,30 +1,33 @@
 import React, { useState, useEffect } from "react";
-import Modal from "../UI/Modal";
-import UserInput from "../UserInputArea/UserInput";
-import styles from "./AddTransactionFrom.module.css";
-import { CreateTransaction, CreateTransactionDto } from "../../models/Create";
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { addNewTransaction } from "../../store/transaction-actions";
-import { fetchAllCategories } from "../../store/category-actions";
+import Modal from "../../UI/Modal";
+import UserInput from "../../UserInputArea/UserInput";
+import styles from "./AddTransactionForm.module.css";
+import {
+  CreateTransaction,
+  CreateTransactionDto,
+} from "../../../models/Create";
+import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
+import { addNewTransaction } from "../../../store/transaction-actions";
+import { fetchAllCategories } from "../../../store/category-actions";
 import {
   stringHasValue,
   amountHasValue,
   dateHasValue,
   newTransactionIsValid,
-} from "../../utils/validators";
-import CategoriesComboBox from "../Dictionaries/CategoriesComboBox";
+} from "../../../utils/validators";
+import CategoriesComboBox from "../../Dictionaries/CategoriesComboBox";
 
-const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
+const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
   onModalClose,
 }) => {
   const [transaction, setTransaction] = useState<CreateTransaction>(
     new CreateTransaction()
   );
   const transactionError = useAppSelector(
-    (state) => state.transactions.addNewError
+    (state) => state.transactions.addNewState.error
   );
   const transactionStatus = useAppSelector(
-    (state) => state.transactions.addNewStatus
+    (state) => state.transactions.addNewState.status
   );
 
   const [isTouched, setIsTouched] = useState(false);
@@ -198,4 +201,4 @@ const AddTransactionFrom: React.FC<{ onModalClose: Function }> = ({
   );
 };
 
-export default AddTransactionFrom;
+export default AddTransactionForm;

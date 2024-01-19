@@ -6,6 +6,7 @@ import Spinner from "../UI/Spinner";
 import { ITransaction } from "../../models/Main";
 import { deleteTransaction } from "../../store/transaction-actions";
 import AlertDialog from "../UI/AlertDialog";
+import styles from "./ResultsArea.module.css";
 
 const ResultsArea: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -13,9 +14,11 @@ const ResultsArea: React.FC = () => {
   const [selectedTransaction, setSelectedTransaction] =
     useState<ITransaction | null>(null);
   const transactionsStatus = useAppSelector(
-    (state) => state.transactions.fetchAllStatus
+    (state) => state.transactions.fetchAllState.status
   );
-  const error = useAppSelector((state) => state.transactions.fetchAllError);
+  const error = useAppSelector(
+    (state) => state.transactions.fetchAllState.error
+  );
   const dispatch = useAppDispatch();
 
   const handleEditTransaction = (transaction: ITransaction) => {
@@ -48,7 +51,7 @@ const ResultsArea: React.FC = () => {
     content = <Spinner text="Pobieranie transakcji..." />;
   } else if (transactionsStatus === "success") {
     content = (
-      <>
+      <div className={styles["results-area"]}>
         {isAlertOpen && (
           <AlertDialog
             title="Usuwanie transakcji"
@@ -67,7 +70,7 @@ const ResultsArea: React.FC = () => {
             onClose={handleCloseModal}
           />
         )}
-      </>
+      </div>
     );
   } else if (transactionsStatus === "error") {
     content = <p>{error}</p>;

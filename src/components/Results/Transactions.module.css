@@ -1,11 +1,7 @@
 .result {
-  max-width: 50rem;
-  margin: 1rem auto 2rem auto;
-  padding: 1rem;
   table-layout: fixed;
-  border-spacing: 1rem;
-  text-align: right;
-  border-collapse: collapse;
+  border-spacing: 0;
+  text-align: left;
   width: 100%;
 }
 
@@ -13,6 +9,9 @@
   font-size: 0.8rem;
   color: #83e6c0;
   text-transform: uppercase;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .result tbody {
@@ -23,8 +22,8 @@
 
 .result th,
 .result td {
-  border: 1px solid #83e6c0;
   padding: 8px;
+  white-space: normal;
 }
 
 .result th {
@@ -33,19 +32,22 @@
   text-align: center;
 }
 
+.result td:nth-child(1),
+.result td:nth-child(4) {
+  text-align: center;
+}
+
 .result tbody tr:nth-child(even) {
   background-color: #1a1f1d;
 }
 
-.result td:last-child {
+.actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
-  white-space: nowrap;
-  overflow: hidden;
 }
 
-.result button {
+.actions button {
   margin: 3px 0;
   padding: 0.25rem 0.5rem;
   cursor: pointer;

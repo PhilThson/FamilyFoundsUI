@@ -23,25 +23,25 @@ const Transactions: React.FC<TransactionListProps> = (props) => {
     .sort((a, b) => b.date.localeCompare(a.date));
 
   return (
-    <>
-      <table className={styles.result}>
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Kontrahent</th>
-            <th>Tytuł</th>
-            <th>Kwota</th>
-            <th>Akcje</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orderedTransactions.map((transaction) => (
-            <tr key={transaction.id}>
-              <td>{formatDate(transaction.date)}</td>
-              <td>{transaction.contractor}</td>
-              <td>{transaction.title}</td>
-              <td>{formatter.format(transaction.amount)}</td>
-              <td>
+    <table className={styles.result}>
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Kontrahent</th>
+          <th>Tytuł</th>
+          <th>Kwota</th>
+          <th>Akcje</th>
+        </tr>
+      </thead>
+      <tbody>
+        {orderedTransactions.map((transaction) => (
+          <tr key={transaction.id}>
+            <td>{formatDate(transaction.date)}</td>
+            <td>{transaction.contractor}</td>
+            <td>{transaction.title}</td>
+            <td>{formatter.format(transaction.amount)}</td>
+            <td>
+              <div className={styles.actions}>
                 <button
                   className={styles.editButton}
                   onClick={() => onEditClick(transaction)}
@@ -54,12 +54,12 @@ const Transactions: React.FC<TransactionListProps> = (props) => {
                 >
                   {<DeleteIcon />}
                 </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </>
+              </div>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 };
 

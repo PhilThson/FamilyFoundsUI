@@ -1,4 +1,4 @@
-export async function client(endpoint, { body, ...customConfig } = {}) {
+export async function client(endpoint, { body, isForm, ...customConfig } = {}) {
   const headers = {
     Accept: "application/json",
     "Content-Type": "application/json",
@@ -14,7 +14,12 @@ export async function client(endpoint, { body, ...customConfig } = {}) {
   }
 
   if (body) {
-    config.body = JSON.stringify(body)
+    if (isForm) {
+      config.body = body;
+      delete config.headers["Content-Type"];
+    } else {
+      config.body = JSON.stringify(body);
+    }
   }
 
   let data
@@ -43,8 +48,8 @@ client.get = function (endpoint, customConfig = {}) {
   return client(endpoint, { ...customConfig, method: "GET" });
 }
 
-client.post = function (endpoint, body, customConfig = {}) {
-  return client(endpoint, { ...customConfig, body });
+client.post = function (endpoint, body, isForm, customConfig = {}) {
+  return client(endpoint, { ...customConfig, body, isForm });
 }
 
 client.put = function (endpoint, body, customConfig = {}) {

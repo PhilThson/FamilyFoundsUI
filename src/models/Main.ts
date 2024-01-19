@@ -9,18 +9,20 @@ export interface ITransaction {
   category?: ICategory;
 }
 
-export class TransactionState {
-  transactions: ITransaction[] = [];
-  isVisible: boolean = false;
-  totalAmount: number = 0.0;
-  fetchAllStatus: Status = "idle";
-  fetchAllError: string | null = null;
-  addNewStatus: Status = "idle";
-  addNewError: string | null = null;
-  updateStatus: Status = "idle";
-  updateError: string | null = null;
-  deleteStatus: Status = "idle";
-  deleteError: string | null = null;
+export interface ITransactionState {
+  transactions: ITransaction[];
+  isVisible: boolean;
+  totalAmount: number;
+  fetchAllState: ITransactionActionState;
+  addNewState: ITransactionActionState;
+  updateState: ITransactionActionState;
+  deleteState: ITransactionActionState;
+  importState: ITransactionActionState;
+}
+
+export interface ITransactionActionState {
+  status: Status;
+  error: string | null;
 }
 
 export type Status = "idle" | "error" | "pending" | "success";
