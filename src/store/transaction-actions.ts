@@ -130,6 +130,13 @@ export const importTransactionsFromCsv = createAsyncThunk(
         formData,
         true //isForm
       );
+      dispatch(
+        uiSliceActions.showNotification({
+          status: "success",
+          title: "Sukces",
+          message: `Poprawnie dodano ${response.data} transakcji`,
+        })
+      );
       return response.data;
     } catch (err) {
       dispatch(

@@ -2,17 +2,9 @@ import React, { useState } from "react";
 import Spinner from "../UI/Spinner";
 import styles from "./CategoriesComboBox.module.css";
 import { useAppSelector } from "../../hooks/hooks";
+import { ComboBoxProps } from "../../models/Main";
 
-export interface CategoriesComboBoxProps {
-  id: string;
-  value: string;
-  isValid?: boolean;
-  errorText?: string;
-  onSelectChange: (event: React.ChangeEvent) => void;
-  onSelectBlur: (event: React.FocusEvent<HTMLElement>) => void;
-}
-
-const CategoriesComboBox: React.FC<CategoriesComboBoxProps> = ({
+const CategoriesComboBox: React.FC<ComboBoxProps> = ({
   id,
   value,
   isValid,

@@ -1,9 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {
-  ITransactionState,
-  ITransaction,
-  ITransactionActionState,
-} from "../models/Main";
+import { ITransactionState, ITransaction, IActionState } from "../models/Main";
 import {
   fetchAllTransactions,
   addNewTransaction,
@@ -12,7 +8,7 @@ import {
   importTransactionsFromCsv,
 } from "./transaction-actions";
 
-const initActionState: ITransactionActionState = {
+const initActionState: IActionState = {
   status: "idle",
   error: null,
 };

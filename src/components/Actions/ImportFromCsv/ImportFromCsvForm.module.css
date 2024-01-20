@@ -24,6 +24,7 @@
   text-transform: uppercase;
 }
 
+.input-group select,
 .input-group input {
   width: 100%;
   padding: 0.5rem;
@@ -34,29 +35,24 @@
   font-size: 1.25rem;
 }
 
+.input-group select:focus,
 .input-group input:focus {
   outline: none;
   border-color: #e0d4fd;
 }
 
+.invalid select,
 .invalid input {
   border: 1px solid #b40e0e;
   background-color: #fddddd;
   color: #373737;
 }
 
+.invalid select:focus,
 .invalid input:focus {
   border-color: #ff8800;
   background-color: #fbe8d2;
   color: #373737;
-}
-
-.info-text {
-  color: #ccc;
-  font-weight: bold;
-  font-size: 0.75rem;
-  margin-top: 0.25rem;
-  text-align: center;
 }
 
 .form-actions {
@@ -89,19 +85,4 @@
   color: #373737;
   cursor: not-allowed;
   border: none;
-}
-
-.error-text {
-  color: crimson;
-  font-weight: bold;
-  font-size: 0.75rem;
-  margin-top: 0.25rem;
-}
-
-.info-text {
-  color: #ccc;
-  font-weight: bold;
-  font-size: 0.75rem;
-  margin-top: 0.25rem;
-  text-align: center;
 }

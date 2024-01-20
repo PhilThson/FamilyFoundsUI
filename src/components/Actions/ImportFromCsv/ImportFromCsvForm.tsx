@@ -1,17 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "../../UI/Modal";
 import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
 import { importTransactionsFromCsv } from "../../../store/transaction-actions";
 import styles from "./ImportFromCsvForm.module.css";
+import ImportSourceComboBox from "../../Dictionaries/ImportSourceComboBox";
+import { fetchAllImportSources } from "../../../store/importSource-actions";
 
 const ImportFromCsvForm: React.FC<{ onImportClose: () => void }> = ({
   onImportClose,
 }) => {
   const [file, setFile] = useState<File | null>(null);
+  const [importSourceId, setImportSourceId] = useState<number | null>(null);
   const [isInfoVisible, setIsInfoVisible] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
   const importState = useAppSelector((state) => state.transactions.importState);
+
+  useEffect(() => {
+    dispatch(fetchAllImportSources());
+  }, [dispatch]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -33,13 +40,13 @@ const ImportFromCsvForm: React.FC<{ onImportClose: () => void }> = ({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!file) {
-      console.error("Nie wskazano pliku");
-      setIsInfoVisible(true);
+    if (!file || !importSourceId) {
+      console.error("Nie wskazano pliku lub źródła importu");
       return;
     }
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("importSourceId", importSourceId.toString());
 
     dispatch(importTransactionsFromCsv(formData));
   };
@@ -51,6 +58,12 @@ const ImportFromCsvForm: React.FC<{ onImportClose: () => void }> = ({
       </h2>
       <form onSubmit={handleSubmit} id="form">
         <div className={styles["user-input"]}>
+          <div className={styles["input-group"]}>
+            <ImportSourceComboBox
+              value={importSourceId}
+              onSelectChange={setImportSourceId}
+            />
+          </div>
           <div className={styles["input-group"]}>
             <label htmlFor="importFile">Wybierz plik do importu</label>
             <input
@@ -68,7 +81,9 @@ const ImportFromCsvForm: React.FC<{ onImportClose: () => void }> = ({
         <div className={styles["form-actions"]}>
           <button
             type="submit"
-            disabled={file === null || importState.status === "pending"}
+            disabled={
+              !file || !importSourceId || importState.status === "pending"
+            }
           >
             Importuj
           </button>

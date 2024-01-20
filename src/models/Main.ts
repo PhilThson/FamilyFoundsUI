@@ -13,14 +13,14 @@ export interface ITransactionState {
   transactions: ITransaction[];
   isVisible: boolean;
   totalAmount: number;
-  fetchAllState: ITransactionActionState;
-  addNewState: ITransactionActionState;
-  updateState: ITransactionActionState;
-  deleteState: ITransactionActionState;
-  importState: ITransactionActionState;
+  fetchAllState: IActionState;
+  addNewState: IActionState;
+  updateState: IActionState;
+  deleteState: IActionState;
+  importState: IActionState;
 }
 
-export interface ITransactionActionState {
+export interface IActionState {
   status: Status;
   error: string | null;
 }
@@ -57,4 +57,28 @@ export class CategoryState {
   categories: ICategory[] = [];
   status: Status = "idle";
   error: string | null = null;
+}
+
+export interface IImportSource {
+  id: number;
+  name: string;
+}
+
+export interface IImportSourceState {
+  importSources: IImportSource[];
+  fetchAllState: IActionState;
+}
+
+export interface ComboBoxProps {
+  id: string;
+  value: string;
+  isValid?: boolean;
+  errorText?: string;
+  onSelectChange: (event: React.ChangeEvent) => void;
+  onSelectBlur: (event: React.FocusEvent<HTMLElement>) => void;
+}
+
+export interface ImportSourceComboBoxProps {
+  value: number | null;
+  onSelectChange: (importSourceId: number | null) => void;
 }
