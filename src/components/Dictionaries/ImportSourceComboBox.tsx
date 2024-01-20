@@ -1,13 +1,9 @@
-import React, { useState } from "react";
 import { useAppSelector } from "../../hooks/hooks";
 import { ImportSourceComboBoxProps } from "../../models/Main";
 import Spinner from "../UI/Spinner";
-import styles from "./ImportSourceComboBox.module.css";
 
 const ImportSourceComboBox: React.FC<ImportSourceComboBoxProps> = (props) => {
   const { value, onSelectChange } = props;
-  const [isTouched, setIsTouched] = useState<boolean>(false);
-  const [isValid, setIsValid] = useState<boolean>(true);
   const importSources = useAppSelector(
     (state) => state.importSources.importSources
   );
@@ -18,11 +14,6 @@ const ImportSourceComboBox: React.FC<ImportSourceComboBoxProps> = (props) => {
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
     const selectedSourceId = selectedValue ? Number(selectedValue) : null;
-    if (!selectedSourceId) {
-      setIsValid(false);
-    } else {
-      setIsValid(true);
-    }
     onSelectChange(selectedSourceId);
   };
 
@@ -41,22 +32,14 @@ const ImportSourceComboBox: React.FC<ImportSourceComboBoxProps> = (props) => {
       </option>
     ));
     importSourcesComboBox = (
-      <div className={isValid === false ? styles.invalid : ""}>
+      <div>
         <label htmlFor="importSource"></label>
-        <select
-          id="importSource"
-          value={value || ""}
-          onChange={handleChange}
-          onBlur={() => setIsTouched(true)}
-        >
+        <select id="importSource" value={value || ""} onChange={handleChange}>
           <option value="" disabled>
             Wybierz źródło importu
           </option>
           {importSourceOptions}
         </select>
-        {isValid === false && isTouched && (
-          <p className={styles["error-text"]}>Należy wybrać źródło importu</p>
-        )}
       </div>
     );
   } else if (importSourcesState.status === "error") {
