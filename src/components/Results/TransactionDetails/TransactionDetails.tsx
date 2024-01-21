@@ -48,7 +48,6 @@ const TransactionDetails: React.FC<ITransactionDetailsProps> = ({
       postingDate: updatedTransaction.postingDate || undefined,
       category: updatedTransaction.category || undefined,
     };
-    console.log(transactionToSend);
     dispatch(updateTransaction(transactionToSend));
   };
 
@@ -105,15 +104,15 @@ const TransactionDetails: React.FC<ITransactionDetailsProps> = ({
         <p className={styles["error-text"]}>{updateTransactionError}</p>
       )}
       <div className={styles.actions}>
-        <button className={styles["button-close"]} onClick={onClose}>
-          Zamknij
-        </button>
         <button
           className={styles["button-save"]}
           onClick={handleSaveTransaction}
           disabled={updateTransactionStatus === "pending"}
         >
           Zapisz
+        </button>
+        <button className={styles["button-close"]} onClick={onClose}>
+          Zamknij
         </button>
       </div>
     </Modal>

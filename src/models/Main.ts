@@ -28,6 +28,9 @@ export interface IActionState {
 export type Status = "idle" | "error" | "pending" | "success";
 export type NotificationTitle = "Brak" | "Błąd" | "Ładowanie" | "Sukces";
 
+export const currencies = ["PLN", "USD", "EUR"] as const;
+export type Currency = (typeof currencies)[number];
+
 export class Notification {
   status: Status = "idle";
   title: NotificationTitle = "Brak";
@@ -81,4 +84,9 @@ export interface ComboBoxProps {
 export interface ImportSourceComboBoxProps {
   value: number | null;
   onSelectChange: (importSourceId: number | null) => void;
+}
+
+export interface CurrencyComboBoxProps {
+  value: Currency;
+  onSelectChange: (event: React.ChangeEvent) => void;
 }

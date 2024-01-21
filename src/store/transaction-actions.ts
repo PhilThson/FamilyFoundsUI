@@ -30,7 +30,21 @@ export const addNewTransaction = createAsyncThunk(
   "transactions/addNewTransaction",
   async (transaction: CreateTransactionDto, { dispatch }) => {
     try {
-      const response = await client.post(TRANSACTIONS_API_URL, transaction);
+      const transactionToSend: CreateTransactionDto = {
+        ...transaction,
+        description: transaction.description || undefined,
+        postingDate: transaction.postingDate || undefined,
+        category: transaction.category || undefined,
+        account: transaction.account || undefined,
+        contractorAccountNumber:
+          transaction.contractorAccountNumber || undefined,
+        contractorBankName: transaction.contractorBankName || undefined,
+      };
+
+      const response = await client.post(
+        TRANSACTIONS_API_URL,
+        transactionToSend
+      );
       dispatch(
         uiSliceActions.showNotification({
           status: "success",

@@ -7,7 +7,6 @@ export const fetchAllImportSources = createAsyncThunk(
   async () => {
     try {
       const response = await client.get(IMPORT_SOURCES_API_URL);
-      console.log(response);
       return response.data;
     } catch (err) {
       console.error("Catch err:", err);

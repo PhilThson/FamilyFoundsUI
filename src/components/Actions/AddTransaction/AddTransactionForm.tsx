@@ -2,10 +2,7 @@ import React, { useState, useEffect } from "react";
 import Modal from "../../UI/Modal";
 import UserInput from "../../UserInputArea/UserInput";
 import styles from "./AddTransactionForm.module.css";
-import {
-  CreateTransaction,
-  CreateTransactionDto,
-} from "../../../models/Create";
+import { CreateTransactionDto } from "../../../models/Create";
 import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
 import { addNewTransaction } from "../../../store/transaction-actions";
 import { fetchAllCategories } from "../../../store/category-actions";
@@ -16,13 +13,24 @@ import {
   newTransactionIsValid,
 } from "../../../utils/validators";
 import CategoriesComboBox from "../../Dictionaries/CategoriesComboBox";
+import CurrencyComboBox from "../../Dictionaries/CurrencyComboBox";
 
 const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
   onModalClose,
 }) => {
-  const [transaction, setTransaction] = useState<CreateTransaction>(
-    new CreateTransaction()
-  );
+  const [transaction, setTransaction] = useState<CreateTransactionDto>({
+    title: "",
+    amount: "",
+    currency: "PLN",
+    account: "",
+    contractor: "",
+    date: new Date().toJSON().slice(0, 10),
+    description: "",
+    postingDate: "",
+    contractorAccountNumber: "",
+    contractorBankName: "",
+    category: "",
+  });
   const transactionError = useAppSelector(
     (state) => state.transactions.addNewState.error
   );
@@ -47,7 +55,6 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
   };
 
   const handleBlur = (event: React.FocusEvent<HTMLElement>) => {
-    console.log(event);
     if (!isTouched) {
       setIsTouched(true);
     }
@@ -95,14 +102,8 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
       validateTransaction("date", transaction.date);
       return;
     }
-    const transactionToSend: CreateTransactionDto = {
-      ...transaction,
-      description: transaction.description || undefined,
-      postingDate: transaction.postingDate || undefined,
-      category: transaction.category || undefined,
-    };
 
-    dispatch(addNewTransaction(transactionToSend));
+    dispatch(addNewTransaction(transaction));
   };
 
   return (
@@ -122,17 +123,6 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            <UserInput
-              id="amount"
-              name="Kwota"
-              isValid={amountIsValid}
-              invalidClass={styles.invalid}
-              errorText="Nieprawidłowa wartość kwoty"
-              type="number"
-              value={transaction.amount}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
           </div>
           <div className={styles["input-group"]}>
             <UserInput
@@ -146,6 +136,35 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
               onChange={handleChange}
               onBlur={handleBlur}
             />
+          </div>
+          <div className={styles["input-group"]}>
+            <UserInput
+              id="account"
+              name="Konto"
+              type="text"
+              value={transaction.account}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+          </div>
+          <div className={styles["input-group"]}>
+            <UserInput
+              id="amount"
+              name="Kwota"
+              isValid={amountIsValid}
+              invalidClass={styles.invalid}
+              errorText="Nieprawidłowa wartość kwoty"
+              type="number"
+              value={transaction.amount}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            <CurrencyComboBox
+              value={transaction.currency}
+              onSelectChange={handleChange}
+            />
+          </div>
+          <div className={styles["input-group"]}>
             <UserInput
               id="date"
               name="Data"
@@ -154,16 +173,6 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
               errorText="Nieprawidłowa data"
               type="date"
               value={transaction.date}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-          </div>
-          <div className={styles["input-group"]}>
-            <UserInput
-              id="description"
-              name="Opis"
-              type="text"
-              value={transaction.description}
               onChange={handleChange}
               onBlur={handleBlur}
             />
@@ -177,13 +186,40 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
             />
           </div>
           <div className={styles["input-group"]}>
+            <UserInput
+              id="contractorAccountNumber"
+              name="Numer kontrahenta"
+              type="text"
+              value={transaction.contractorAccountNumber}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            <UserInput
+              id="contractorBankName"
+              name="Bank kontrahenta"
+              type="text"
+              value={transaction.contractorBankName}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+          </div>
+          <div className={styles["input-group"]}>
+            <UserInput
+              id="description"
+              name="Opis"
+              type="text"
+              value={transaction.description}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
             <CategoriesComboBox
               id="category"
-              value={transaction.category}
+              value={transaction.category || ""}
               onSelectChange={handleChange}
               onSelectBlur={handleBlur}
             />
           </div>
+          <div className={styles["input-group"]}></div>
         </div>
         {transactionStatus === "error" && (
           <p className={styles["error-text"]}>{transactionError}</p>

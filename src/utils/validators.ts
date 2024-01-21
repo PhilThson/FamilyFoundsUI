@@ -1,4 +1,4 @@
-import { CreateTransaction } from "../models/Create";
+import { CreateTransactionDto } from "../models/Create";
 
 export const stringHasValue = (value: string): boolean =>
   value ? true : false;
@@ -13,7 +13,7 @@ export const dateHasValue = (value: string) => {
   return !isNaN(timestamp);
 };
 
-export const newTransactionIsValid = (transaction: CreateTransaction) =>
+export const newTransactionIsValid = (transaction: CreateTransactionDto) =>
   stringHasValue(transaction.title) &&
   stringHasValue(transaction.contractor) &&
   amountHasValue(transaction.amount) &&

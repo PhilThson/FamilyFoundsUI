@@ -27,7 +27,7 @@ const CategoriesComboBox: React.FC<ComboBoxProps> = ({
   let categoriesComboBox;
   if (categoriesStatus === "pending") {
     categoriesComboBox = <Spinner text="Pobieranie kategorii..." size="3rem" />;
-  } else if (categoriesStatus === "success" && categories.length > 0) {
+  } else if (categoriesStatus === "success") {
     const categoryOptions = categories.map((category) => (
       <option key={category.id} value={category.name}>
         {category.name}
@@ -50,16 +50,10 @@ const CategoriesComboBox: React.FC<ComboBoxProps> = ({
         )}
       </div>
     );
-  } else if (categoriesStatus === "error") {
-    categoriesComboBox = (
-      <div>
-        <p className={styles["info-text"]}>{categoriesError}</p>
-      </div>
-    );
   } else {
     categoriesComboBox = (
       <div>
-        <p className={styles["info-text"]}>Brak kategorii do wybrania</p>
+        <p className={styles["info-text"]}>{categoriesError}</p>
       </div>
     );
   }

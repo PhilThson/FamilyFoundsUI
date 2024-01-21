@@ -1,20 +1,16 @@
-export class CreateTransaction {
-  title: string = "";
-  amount: string = "";
-  contractor: string = "";
-  date: string = new Date().toJSON().slice(0, 10);
-  description: string = "";
-  postingDate?: string = "";
-  category: string = "";
-}
+import { Currency } from "./Main";
 
 export interface CreateTransactionDto {
   title: string;
   amount: string;
+  currency: Currency;
+  account?: string;
   contractor: string;
   date: string;
-  description?: string;
   postingDate?: string;
+  description?: string;
+  contractorAccountNumber?: string;
+  contractorBankName?: string;
   category?: string;
 }
 
