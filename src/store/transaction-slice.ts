@@ -16,12 +16,16 @@ const initActionState: IActionState = {
 const initState: ITransactionState = {
   transactions: [],
   isVisible: false,
-  totalAmount: 0.0,
   fetchAllState: initActionState,
   addNewState: initActionState,
   updateState: initActionState,
   deleteState: initActionState,
   importState: initActionState,
+  summaryData: {
+    totalDebit: 0.0,
+    totalCredit: 0.0,
+    balance: 0.0,
+  },
 };
 
 const transactionSlice = createSlice({
@@ -34,7 +38,6 @@ const transactionSlice = createSlice({
     ) {
       if (action.payload && action.payload.length > 0) {
         state.transactions = action.payload;
-        state.totalAmount = getTotalAmount(state.transactions);
       }
     },
     toggle(state) {
@@ -49,7 +52,10 @@ const transactionSlice = createSlice({
       .addCase(fetchAllTransactions.fulfilled, (state, action) => {
         state.fetchAllState.status = "success";
         state.transactions = action.payload;
-        state.totalAmount = getTotalAmount(state.transactions);
+        const totals: [number, number] = computeTotals(state.transactions);
+        state.summaryData.totalDebit = totals[0];
+        state.summaryData.totalCredit = totals[1];
+        state.summaryData.balance = totals[0] + totals[1];
       })
       .addCase(fetchAllTransactions.pending, (state) => {
         state.fetchAllState.status = "pending";
@@ -109,8 +115,16 @@ const transactionSlice = createSlice({
   },
 });
 
-const getTotalAmount = (items: ITransaction[]) =>
-  items.reduce((acc, curr) => (acc += curr.amount), 0);
+const computeTotals = (items: ITransaction[]): [number, number] => {
+  let totalDebit = 0;
+  let totalCredit = 0;
+  items.forEach((item) => {
+    item.amount < 0
+      ? (totalDebit += item.amount)
+      : (totalCredit += item.amount);
+  });
+  return [totalDebit, totalCredit];
+};
 
 export const transactionActions = transactionSlice.actions;
 export default transactionSlice.reducer;

@@ -3,10 +3,12 @@ import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
 import { fetchAllCategories } from "../../../store/category-actions";
 import styles from "./Summary.module.css";
 import { Status } from "../../../models/Main";
+import { formatAmount } from "../../../utils/formatters";
 
 const Summary: React.FC<{ transactionsStatus: Status }> = (props) => {
   const { transactionsStatus } = props;
   const categories = useAppSelector((state) => state.categories.categories);
+  const summaryData = useAppSelector((state) => state.transactions.summaryData);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -33,15 +35,15 @@ const Summary: React.FC<{ transactionsStatus: Status }> = (props) => {
           <hr />
           <li key="total-debit" className={styles["total-debit"]}>
             <span>Razem</span>
-            <span>2999.99</span>
+            <span>{formatAmount(summaryData.totalDebit)}</span>
           </li>
           <li key="total-credit" className={styles["total-credit"]}>
             <span>Dochód</span>
-            <span>3999.99</span>
+            <span>{formatAmount(summaryData.totalCredit)}</span>
           </li>
           <li key="balance" className={styles.balance}>
             <span>Pozostało</span>
-            <span>1000.00</span>
+            <span>{formatAmount(summaryData.balance)}</span>
           </li>
         </ul>
       </fieldset>

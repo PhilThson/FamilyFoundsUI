@@ -16,17 +16,23 @@ export interface ITransaction {
 export interface ITransactionState {
   transactions: ITransaction[];
   isVisible: boolean;
-  totalAmount: number;
   fetchAllState: IActionState;
   addNewState: IActionState;
   updateState: IActionState;
   deleteState: IActionState;
   importState: IActionState;
+  summaryData: ISummaryData;
 }
 
 export interface IActionState {
   status: Status;
   error: string | null;
+}
+
+export interface ISummaryData {
+  totalDebit: number;
+  totalCredit: number;
+  balance: number;
 }
 
 export type Status = "idle" | "error" | "pending" | "success";
