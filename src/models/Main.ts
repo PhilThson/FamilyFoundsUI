@@ -1,11 +1,15 @@
 export interface ITransaction {
   id: number;
   title: string;
-  contractor: string;
+  contractor?: string;
+  account?: string;
   amount: number;
+  currency: string;
   description?: string;
   date: string;
   postingDate?: string;
+  contractorAccountNumber?: string;
+  contractorBankName?: string;
   category?: ICategory;
 }
 
@@ -89,4 +93,12 @@ export interface ImportSourceComboBoxProps {
 export interface CurrencyComboBoxProps {
   value: Currency;
   onSelectChange: (event: React.ChangeEvent) => void;
+}
+
+export interface ITransactionPropertyProps {
+  name: string;
+  displayName?: string;
+  initialValue: string;
+  type?: string;
+  onValueChange: (name: string, value: string) => void;
 }

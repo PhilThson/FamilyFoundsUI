@@ -1,9 +1,10 @@
-export const currencyFormatter = new Intl.NumberFormat('pl-PL', {
-  style: 'currency',
-  currency: 'PLN',
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-});
+export const formatAmount = (value, currency) =>
+  new Intl.NumberFormat("pl-PL", {
+    style: 'currency',
+    currency: currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
 
 export const formatDate = (dateTime) => {
   if (!isDateValid(dateTime)) return dateTime;

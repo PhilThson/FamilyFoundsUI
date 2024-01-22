@@ -3,14 +3,7 @@ import styles from "./Property.module.css";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import { formatDate } from "../../../utils/formatters";
-
-interface ITransactionPropertyProps {
-  name: string;
-  displayName?: string;
-  initialValue: string;
-  type?: string;
-  onValueChange: (name: string, value: string) => void;
-}
+import { ITransactionPropertyProps } from "../../../models/Main";
 
 const Property: React.FC<ITransactionPropertyProps> = ({
   name,

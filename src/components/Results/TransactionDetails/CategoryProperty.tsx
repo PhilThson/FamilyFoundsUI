@@ -4,14 +4,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import { useAppSelector, useAppDispatch } from "../../../hooks/hooks";
 import { fetchAllCategories } from "../../../store/category-actions";
+import { ITransactionPropertyProps } from "../../../models/Main";
 
-interface ITransactionPropertyProps {
-  name: string;
-  initialValue: string;
-  onValueChange: (name: string, value: string) => void;
-}
-
-const Property: React.FC<ITransactionPropertyProps> = ({
+const CategoryProperty: React.FC<ITransactionPropertyProps> = ({
   name,
   initialValue,
   onValueChange,
@@ -45,7 +40,7 @@ const Property: React.FC<ITransactionPropertyProps> = ({
     ));
     categoriesComboBox = (
       <select id={name} value={value} onChange={handleChange}>
-        {/* <option value=""></option> */}
+        <option value=""></option>
         {categoryOptions}
       </select>
     );
@@ -79,4 +74,4 @@ const Property: React.FC<ITransactionPropertyProps> = ({
   );
 };
 
-export default Property;
+export default CategoryProperty;

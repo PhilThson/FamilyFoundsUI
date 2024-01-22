@@ -1,7 +1,4 @@
-import {
-  currencyFormatter as formatter,
-  formatDate,
-} from "../../utils/formatters";
+import { formatDate, formatAmount } from "../../utils/formatters";
 import styles from "./Transactions.module.css";
 import { ITransaction } from "../../models/Main";
 import { useAppSelector } from "../../hooks/hooks";
@@ -39,7 +36,7 @@ const Transactions: React.FC<TransactionListProps> = (props) => {
             <td>{formatDate(transaction.date)}</td>
             <td>{transaction.contractor}</td>
             <td>{transaction.title}</td>
-            <td>{formatter.format(transaction.amount)}</td>
+            <td>{formatAmount(transaction.amount, transaction.currency)}</td>
             <td>
               <div className={styles.actions}>
                 <button
