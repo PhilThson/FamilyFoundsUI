@@ -4,6 +4,7 @@ import logo from "../../assets/logo192.png";
 const Header: React.FC<{ title: string }> = ({ title }) => {
   return (
     <header>
+      <img src={logo} alt="React logo" />
       <h1>{title}</h1>
       <img src={logo} alt="React logo" />
     </header>

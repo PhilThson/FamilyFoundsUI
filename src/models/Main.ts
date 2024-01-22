@@ -102,3 +102,7 @@ export interface ITransactionPropertyProps {
   type?: string;
   onValueChange: (name: string, value: string) => void;
 }
+
+export interface TransactionsAreaProps {
+  transactionsState: IActionState;
+}

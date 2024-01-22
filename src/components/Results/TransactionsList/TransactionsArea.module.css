@@ -1,0 +1,8 @@
+.transactions-area {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 60rem;
+  border: 1px solid #83e6c0;
+  border-radius: 0.5rem;
+  max-height: 60vh;
+}

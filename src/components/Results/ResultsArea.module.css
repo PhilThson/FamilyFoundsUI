@@ -1,7 +1,4 @@
-.results-area {
-  overflow-x: hidden;
+.results {
+  height: 100%;
   margin: 1rem auto 2rem auto;
-  width: 100%;
-  max-width: 60rem;
-  border: 1px solid #83e6c0;
 }

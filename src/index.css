@@ -21,13 +21,16 @@ code {
 .layout {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
   margin: 10px;
 }
 
 header {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin: 2rem auto;
+  width: 50%;
 }
 
 header img {
@@ -42,10 +45,10 @@ header h1 {
 }
 
 main {
-  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 100%;
 }
 
 .center {

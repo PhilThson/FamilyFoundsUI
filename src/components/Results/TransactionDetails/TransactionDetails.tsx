@@ -77,7 +77,7 @@ const TransactionDetails: React.FC<ITransactionDetailsProps> = ({
         <Property
           name="amount"
           displayName="Kwota"
-          initialValue={transaction.amount.toString()}
+          initialValue={transaction.amount.toFixed(2).toString()}
           type="number"
           onValueChange={handlePropertyChange}
         />

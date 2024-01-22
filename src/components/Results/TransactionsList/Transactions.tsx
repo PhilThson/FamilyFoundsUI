@@ -1,7 +1,7 @@
-import { formatDate, formatAmount } from "../../utils/formatters";
+import { formatDate, formatAmount } from "../../../utils/formatters";
 import styles from "./Transactions.module.css";
-import { ITransaction } from "../../models/Main";
-import { useAppSelector } from "../../hooks/hooks";
+import { ITransaction } from "../../../models/Main";
+import { useAppSelector } from "../../../hooks/hooks";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -20,7 +20,7 @@ const Transactions: React.FC<TransactionListProps> = (props) => {
     .sort((a, b) => b.date.localeCompare(a.date));
 
   return (
-    <table className={styles.result}>
+    <table className={styles.transactions}>
       <thead>
         <tr>
           <th>Data</th>
