@@ -29,7 +29,7 @@ const CategoriesComboBox: React.FC<ComboBoxProps> = ({
     categoriesComboBox = <Spinner text="Pobieranie kategorii..." size="3rem" />;
   } else if (categoriesStatus === "success") {
     const categoryOptions = categories.map((category) => (
-      <option key={category.id} value={category.name}>
+      <option key={category.id} value={category.id}>
         {category.name}
       </option>
     ));

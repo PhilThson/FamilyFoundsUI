@@ -4,14 +4,14 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import { useAppSelector, useAppDispatch } from "../../../hooks/hooks";
 import { fetchAllCategories } from "../../../store/category-actions";
-import { ITransactionPropertyProps } from "../../../models/Main";
+import { ICategory, ICategoryPropertyProps } from "../../../models/Main";
 
-const CategoryProperty: React.FC<ITransactionPropertyProps> = ({
+const CategoryProperty: React.FC<ICategoryPropertyProps> = ({
   name,
   initialValue,
   onValueChange,
 }) => {
-  const [value, setValue] = useState(initialValue);
+  const [category, setCategory] = useState<ICategory | undefined>(initialValue);
   const [isEditing, setIsEditing] = useState(false);
   const categories = useAppSelector((state) => state.categories.categories);
   const dispatch = useAppDispatch();
@@ -23,23 +23,28 @@ const CategoryProperty: React.FC<ITransactionPropertyProps> = ({
   const handleEditClick = () => {
     setIsEditing((previous) => !previous);
     if (isEditing) {
-      onValueChange(name, value);
+      onValueChange(name, category?.id.toString() ?? "");
     }
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setValue(event.target.value);
+    const choice = categories.find(
+      (category) => category.id === +event.target.value
+    );
+    if (choice) {
+      setCategory(choice);
+    }
   };
 
   let categoriesComboBox;
   if (categories && categories.length > 0) {
     const categoryOptions = categories.map((category) => (
-      <option key={category.id} value={category.name}>
+      <option key={category.id} value={category.id}>
         {category.name}
       </option>
     ));
     categoriesComboBox = (
-      <select id={name} value={value} onChange={handleChange}>
+      <select id={name} value={category?.id} onChange={handleChange}>
         <option value=""></option>
         {categoryOptions}
       </select>
@@ -57,11 +62,10 @@ const CategoryProperty: React.FC<ITransactionPropertyProps> = ({
   return (
     <li key={name}>
       <div className={styles.property}>
-        {/* className={isEditing ? "active" : undefined */}
         <span className={styles["property-name"]}>Kategoria</span>
         <span>
           {!isEditing ? (
-            <span className={styles["property-value"]}>{value}</span>
+            <span className={styles["property-value"]}>{category?.name}</span>
           ) : (
             categoriesComboBox
           )}

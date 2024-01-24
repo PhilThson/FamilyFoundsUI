@@ -33,6 +33,12 @@ export interface ISummaryData {
   totalDebit: number;
   totalCredit: number;
   balance: number;
+  categoriesCount: ICategorySum[];
+}
+
+export interface ICategorySum {
+  name: string;
+  amount: number;
 }
 
 export type Status = "idle" | "error" | "pending" | "success";
@@ -104,8 +110,14 @@ export interface CurrencyComboBoxProps {
 export interface ITransactionPropertyProps {
   name: string;
   displayName?: string;
-  initialValue: string;
+  initialValue: string | number;
   type?: string;
+  onValueChange: (name: string, value: string) => void;
+}
+
+export interface ICategoryPropertyProps {
+  name: string;
+  initialValue?: ICategory;
   onValueChange: (name: string, value: string) => void;
 }
 

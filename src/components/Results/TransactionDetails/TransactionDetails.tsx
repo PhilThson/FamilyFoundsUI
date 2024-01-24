@@ -36,7 +36,7 @@ const TransactionDetails: React.FC<ITransactionDetailsProps> = ({
       description: transaction.description,
       date: transaction.date,
       postingDate: transaction.postingDate,
-      category: transaction.category?.name,
+      categoryId: transaction.category?.id,
       contractorAccountNumber: transaction.contractorAccountNumber,
       contractorBankName: transaction.contractorBankName,
     });
@@ -125,8 +125,8 @@ const TransactionDetails: React.FC<ITransactionDetailsProps> = ({
           onValueChange={handlePropertyChange}
         />
         <CategoryProperty
-          name="category"
-          initialValue={transaction.category?.name || ""}
+          name="categoryId"
+          initialValue={transaction.category}
           onValueChange={handlePropertyChange}
         />
       </ul>

@@ -1,5 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { ITransactionState, ITransaction, IActionState } from "../models/Main";
+import {
+  ITransactionState,
+  ITransaction,
+  IActionState,
+  ISummaryData,
+  ICategorySum,
+} from "../models/Main";
 import {
   fetchAllTransactions,
   addNewTransaction,
@@ -25,6 +31,7 @@ const initState: ITransactionState = {
     totalDebit: 0.0,
     totalCredit: 0.0,
     balance: 0.0,
+    categoriesCount: [],
   },
 };
 
@@ -52,10 +59,7 @@ const transactionSlice = createSlice({
       .addCase(fetchAllTransactions.fulfilled, (state, action) => {
         state.fetchAllState.status = "success";
         state.transactions = action.payload;
-        const totals: [number, number] = computeTotals(state.transactions);
-        state.summaryData.totalDebit = totals[0];
-        state.summaryData.totalCredit = totals[1];
-        state.summaryData.balance = totals[0] + totals[1];
+        state.summaryData = computeSummary(state.transactions);
       })
       .addCase(fetchAllTransactions.pending, (state) => {
         state.fetchAllState.status = "pending";
@@ -78,12 +82,14 @@ const transactionSlice = createSlice({
       .addCase(
         updateTransaction.fulfilled,
         (state, action: { payload: ITransaction; type: string }) => {
+          console.log("Updated transaction", action.payload);
           state.updateState.status = "success";
           let newTransactionsList = state.transactions.filter(
             (t) => t.id !== action.payload.id
           );
           newTransactionsList.push(action.payload);
           state.transactions = newTransactionsList;
+          state.summaryData = computeSummary(newTransactionsList);
         }
       )
       .addCase(updateTransaction.pending, (state) => {
@@ -98,6 +104,7 @@ const transactionSlice = createSlice({
         state.transactions = state.transactions.filter(
           (t) => t.id !== action.payload
         );
+        state.summaryData = computeSummary(state.transactions);
       })
       .addCase(deleteTransaction.rejected, (state) => {
         state.deleteState.status = "error";
@@ -115,15 +122,31 @@ const transactionSlice = createSlice({
   },
 });
 
-const computeTotals = (items: ITransaction[]): [number, number] => {
+const computeSummary = (items: ITransaction[]): ISummaryData => {
   let totalDebit = 0;
   let totalCredit = 0;
+  const categoriesCount: { [name: string]: ICategorySum } = {};
   items.forEach((item) => {
-    item.amount < 0
-      ? (totalDebit += item.amount)
-      : (totalCredit += item.amount);
+    if (item.amount < 0) {
+      totalDebit += item.amount;
+      const categoryName = item.category?.name || "Brak";
+      categoriesCount[categoryName]
+        ? (categoriesCount[categoryName].amount += item.amount)
+        : (categoriesCount[categoryName] = {
+            name: categoryName,
+            amount: item.amount,
+          });
+    } else {
+      totalCredit += item.amount;
+    }
   });
-  return [totalDebit, totalCredit];
+  const balance = totalDebit + totalCredit;
+  return {
+    totalDebit,
+    totalCredit,
+    balance,
+    categoriesCount: Object.values(categoriesCount),
+  };
 };
 
 export const transactionActions = transactionSlice.actions;

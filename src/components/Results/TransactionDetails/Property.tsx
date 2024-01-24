@@ -18,7 +18,7 @@ const Property: React.FC<ITransactionPropertyProps> = ({
   const handleEditClick = () => {
     setIsEditing((previous) => !previous);
     if (isEditing) {
-      onValueChange(name, value);
+      onValueChange(name, value.toString());
     }
   };
 

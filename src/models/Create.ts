@@ -11,7 +11,7 @@ export interface CreateTransactionDto {
   description?: string;
   contractorAccountNumber?: string;
   contractorBankName?: string;
-  category?: string;
+  categoryId?: string;
 }
 
 // const month = date.toLocaleString('en-US', {month: 'long'});

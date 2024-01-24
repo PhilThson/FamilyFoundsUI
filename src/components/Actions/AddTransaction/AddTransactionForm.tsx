@@ -29,7 +29,7 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
     postingDate: "",
     contractorAccountNumber: "",
     contractorBankName: "",
-    category: "",
+    categoryId: "",
   });
   const transactionError = useAppSelector(
     (state) => state.transactions.addNewState.error
@@ -51,7 +51,7 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
 
   const handleChange = (event: React.ChangeEvent) => {
     const { id, value } = event.target as HTMLInputElement;
-    setTransaction((previous) => ({ ...previous, [id]: value }));
+    setTransaction((previous) => ({ ...previous, [id]: value ?? undefined }));
   };
 
   const handleBlur = (event: React.FocusEvent<HTMLElement>) => {
@@ -102,7 +102,7 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
       validateTransaction("date", transaction.date);
       return;
     }
-
+    console.log("new transaction:", transaction);
     dispatch(addNewTransaction(transaction));
   };
 
@@ -213,8 +213,8 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
               onBlur={handleBlur}
             />
             <CategoriesComboBox
-              id="category"
-              value={transaction.category || ""}
+              id="categoryId"
+              value={transaction.categoryId || ""}
               onSelectChange={handleChange}
               onSelectBlur={handleBlur}
             />

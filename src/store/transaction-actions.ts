@@ -34,7 +34,7 @@ export const addNewTransaction = createAsyncThunk(
         ...transaction,
         description: transaction.description || undefined,
         postingDate: transaction.postingDate || undefined,
-        category: transaction.category || undefined,
+        categoryId: transaction.categoryId || undefined,
         account: transaction.account || undefined,
         contractorAccountNumber:
           transaction.contractorAccountNumber || undefined,

@@ -8,7 +8,7 @@ export interface UpdateTransactionDto {
   date: string;
   description?: string;
   postingDate?: string;
-  category?: string;
+  categoryId?: number;
   contractorAccountNumber?: string;
   contractorBankName?: string;
 }
