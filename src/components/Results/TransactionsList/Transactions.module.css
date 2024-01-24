@@ -24,6 +24,50 @@
 .transactions td {
   padding: 8px;
   white-space: normal;
+  text-wrap: balance;
+}
+
+.transactions th:nth-child(1),
+.transactions td:nth-child(1),
+.transactions th:nth-child(4),
+.transactions td:nth-child(4),
+.transactions th:nth-child(5),
+.transactions td:nth-child(5) {
+  width: 10%;
+}
+
+.transactions th:nth-child(6),
+.transactions td:nth-child(6) {
+  width: 15%;
+}
+
+.transactions th:nth-child(1),
+.transactions th:nth-child(5) {
+  cursor: pointer;
+  position: relative;
+}
+
+.sortable {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sort-arrow {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  margin-left: 4px;
+}
+
+.sorted-asc .sort-arrow {
+  border-bottom: 4px solid #000;
+}
+
+.sorted-desc .sort-arrow {
+  border-top: 4px solid #000;
 }
 
 .transactions th {
@@ -33,7 +77,8 @@
 }
 
 .transactions td:nth-child(1),
-.transactions td:nth-child(4) {
+.transactions td:nth-child(4),
+.transactions td:nth-child(5) {
   text-align: center;
 }
 

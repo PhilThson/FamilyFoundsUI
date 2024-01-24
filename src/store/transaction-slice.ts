@@ -82,7 +82,6 @@ const transactionSlice = createSlice({
       .addCase(
         updateTransaction.fulfilled,
         (state, action: { payload: ITransaction; type: string }) => {
-          console.log("Updated transaction", action.payload);
           state.updateState.status = "success";
           let newTransactionsList = state.transactions.filter(
             (t) => t.id !== action.payload.id

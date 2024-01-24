@@ -31,7 +31,7 @@ const AlertDialog = (props) => {
           onConfirm={props.onConfirm}
           onCancel={props.onCancel}
         />,
-        document.getElementById("modal-root")
+        document.getElementById("alert-root")
       )}
     </>
   );

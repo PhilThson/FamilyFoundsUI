@@ -5,6 +5,7 @@ import { importTransactionsFromCsv } from "../../../store/transaction-actions";
 import styles from "./ImportFromCsvForm.module.css";
 import ImportSourceComboBox from "../../Dictionaries/ImportSourceComboBox";
 import { fetchAllImportSources } from "../../../store/importSource-actions";
+import Spinner from "../../UI/Spinner";
 
 const ImportFromCsvForm: React.FC<{ onImportClose: () => void }> = ({
   onImportClose,
@@ -78,6 +79,9 @@ const ImportFromCsvForm: React.FC<{ onImportClose: () => void }> = ({
           <p className="error-text">{importState.error}</p>
         )}
         {isInfoVisible && <p className="info-text">Należy wskazać plik .csv</p>}
+        {importState.status === "pending" && (
+          <Spinner text="Trwa importowanie transakcji..." size="3rem" />
+        )}
         <div className={styles["form-actions"]}>
           <button
             type="submit"
