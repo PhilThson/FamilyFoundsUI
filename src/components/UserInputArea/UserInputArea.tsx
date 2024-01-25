@@ -4,16 +4,18 @@ import UserInput from "./UserInput";
 import styles from "./UserInputArea.module.css";
 import { fetchAllTransactions } from "../../store/transaction-actions";
 import { IDateRange } from "../../models/Main";
-//import { transactionActions } from "../../store/transaction-slice";
+
+const currentDate = new Date();
+const oneMonthAgo = new Date();
+oneMonthAgo.setMonth(currentDate.getMonth() - 1);
 
 const INIT_DATERANGE: IDateRange = {
-  startDate: "2024-01-01",
-  endDate: "2024-12-31",
+  startDate: oneMonthAgo.toJSON().slice(0, 10),
+  endDate: currentDate.toJSON().slice(0, 10),
 };
 
 const UserInputArea = () => {
   const dispatch = useAppDispatch();
-  //const isResultsVisible = useAppSelector((state) => state.transactions.isVisible);
   const [dateRange, setDateRange] = useState(INIT_DATERANGE);
   const [isValidRange, setIsValidRange] = useState(true);
 
@@ -29,10 +31,7 @@ const UserInputArea = () => {
   };
 
   const handleSearchClick = () => {
-    dispatch(fetchAllTransactions());
-    // if (!isResultsVisible) {
-    //   dispatch(transactionActions.toggle());
-    // }
+    dispatch(fetchAllTransactions(dateRange));
   };
 
   return (

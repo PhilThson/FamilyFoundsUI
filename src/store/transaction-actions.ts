@@ -1,20 +1,18 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { uiSliceActions } from "./ui-slice";
 import { TRANSACTIONS_API_URL } from "../settings/constants";
-//import { DateRange } from "../models/Main";
 import { client } from "../utils/api-client";
 import { CreateTransactionDto } from "../models/Create";
 import { AppDispatch } from ".";
 import { UpdateTransactionDto } from "../models/Update";
-import { ITransaction } from "../models/Main";
-
-//dateRange: DateRange
+import { IDateRange, ITransaction } from "../models/Main";
 
 export const fetchAllTransactions = createAsyncThunk(
   "transactions/fetchAllTransactions",
-  async () => {
+  async (dateRange: IDateRange) => {
     try {
-      const response = await client.get(TRANSACTIONS_API_URL);
+      const queryData = `?startDate=${dateRange.startDate}&endDate=${dateRange.endDate}`;
+      const response = await client.get(TRANSACTIONS_API_URL + queryData);
       return response.data;
     } catch (err) {
       return Promise.reject(

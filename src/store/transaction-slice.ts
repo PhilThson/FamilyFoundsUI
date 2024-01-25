@@ -32,6 +32,7 @@ const initState: ITransactionState = {
     totalCredit: 0.0,
     balance: 0.0,
     categoriesCount: [],
+    transactionsCount: 0,
   },
 };
 
@@ -145,6 +146,7 @@ const computeSummary = (items: ITransaction[]): ISummaryData => {
     totalCredit,
     balance,
     categoriesCount: Object.values(categoriesCount),
+    transactionsCount: items.length,
   };
 };
 

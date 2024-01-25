@@ -8,10 +8,16 @@ const ResultsArea: React.FC = () => {
   const transactionsState = useAppSelector(
     (state) => state.transactions.fetchAllState
   );
+  const transactionsCount = useAppSelector(
+    (state) => state.transactions.summaryData.transactionsCount
+  );
 
   return (
     <section className={styles.results}>
-      <TransactionsArea transactionsState={transactionsState} />
+      <TransactionsArea
+        transactionsState={transactionsState}
+        transactionsCount={transactionsCount}
+      />
       <Summary transactionsStatus={transactionsState.status} />
     </section>
   );

@@ -10,7 +10,7 @@ const Summary: React.FC<{ transactionsStatus: Status }> = (props) => {
 
   let content;
 
-  if (transactionsStatus === "success") {
+  if (transactionsStatus === "success" && summaryData.transactionsCount > 0) {
     content = (
       <fieldset className={styles.summary}>
         <legend className={styles.title}>Podsumowanie</legend>

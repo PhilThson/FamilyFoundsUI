@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAppDispatch } from "../../../hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
 import Transactions from "./Transactions";
 import TransactionDetails from "../TransactionDetails/TransactionDetails";
 import Spinner from "../../UI/Spinner";
@@ -10,6 +10,7 @@ import styles from "./TransactionsArea.module.css";
 
 const TransactionsArea: React.FC<TransactionsAreaProps> = ({
   transactionsState,
+  transactionsCount,
 }) => {
   const { status: transactionsStatus, error: transactionsError } =
     transactionsState;
@@ -51,28 +52,32 @@ const TransactionsArea: React.FC<TransactionsAreaProps> = ({
       content = <Spinner text="Pobieranie transakcji..." />;
       break;
     case "success":
-      content = (
-        <div className={styles["transactions-area"]}>
-          {isAlertOpen && (
-            <AlertDialog
-              title="Usuwanie transakcji"
-              message="Czy na pewno usunąć transakcję?"
-              onConfirm={handleConfirmDelete}
-              onCancel={() => setIsAlertOpen(false)}
+      if (transactionsCount > 0) {
+        content = (
+          <div className={styles["transactions-area"]}>
+            {isAlertOpen && (
+              <AlertDialog
+                title="Usuwanie transakcji"
+                message="Czy na pewno usunąć transakcję?"
+                onConfirm={handleConfirmDelete}
+                onCancel={() => setIsAlertOpen(false)}
+              />
+            )}
+            <Transactions
+              onEditClick={handleEditTransaction}
+              onDeleteClick={handleDeleteTransaction}
             />
-          )}
-          <Transactions
-            onEditClick={handleEditTransaction}
-            onDeleteClick={handleDeleteTransaction}
-          />
-          {isModalOpen && selectedTransaction && (
-            <TransactionDetails
-              transaction={selectedTransaction}
-              onClose={handleCloseModal}
-            />
-          )}
-        </div>
-      );
+            {isModalOpen && selectedTransaction && (
+              <TransactionDetails
+                transaction={selectedTransaction}
+                onClose={handleCloseModal}
+              />
+            )}
+          </div>
+        );
+      } else {
+        content = <p>Brak transakcji w zadanym przedziale czasowym</p>;
+      }
       break;
     case "error":
       content = <p>{transactionsError}</p>;

@@ -34,6 +34,7 @@ export interface ISummaryData {
   totalCredit: number;
   balance: number;
   categoriesCount: ICategorySum[];
+  transactionsCount: number;
 }
 
 export interface ICategorySum {
@@ -123,4 +124,5 @@ export interface ICategoryPropertyProps {
 
 export interface TransactionsAreaProps {
   transactionsState: IActionState;
+  transactionsCount: number;
 }
