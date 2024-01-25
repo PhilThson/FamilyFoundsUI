@@ -1,0 +1,75 @@
+.details {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 20rem;
+  overflow: scroll;
+}
+
+.details.highlight-property li.active {
+  border-color: #f6e35a;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.details.highlight-property li.active .player-name {
+  color: #f6e35a;
+}
+
+.details button {
+  width: 3rem;
+  border: none;
+  background: none;
+  color: #39443f;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 0.5rem 0.25rem 0.25rem 0.25rem;
+  text-align: center;
+}
+
+.details button:hover {
+  color: #101f19;
+}
+
+.actions {
+  text-align: right;
+  margin: 1rem 0 0 0;
+}
+
+.actions button {
+  font: inherit;
+  cursor: pointer;
+  background-color: transparent;
+  border: 1px solid #1a1f1d;
+  padding: 0.5rem 2rem;
+  border-radius: 5px;
+  margin-left: 1rem;
+}
+
+.actions button:hover,
+.actions button:active {
+  background-color: #003e25;
+  border-color: #39443f;
+  color: white;
+}
+
+.actions .button-close:hover,
+.actions .button-close:active {
+  background-color: #6b2323;
+}
+
+.actions .button-close {
+  color: #1d2320;
+}
+
+.actions .button-save {
+  background-color: #39443f;
+  color: white;
+}
+
+.error-text {
+  color: crimson;
+  font-weight: bold;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}

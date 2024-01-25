@@ -1,0 +1,17 @@
+.error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  background-color: transparent;
+}
+
+.error p {
+  font-style: italic;
+}
+
+.error-message {
+  font-size: 24px;
+  color: crimson;
+}

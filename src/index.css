@@ -3,7 +3,7 @@
 }
 
 body {
-  margin: 0;
+  margin: 20px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
@@ -11,9 +11,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: radial-gradient(#303b37, #1a1f1d);
   color: #e1eeeb;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
 }
 
 code {
@@ -21,9 +18,19 @@ code {
     monospace;
 }
 
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 10px;
+}
+
 header {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin: 2rem auto;
+  width: 50%;
 }
 
 header img {
@@ -41,91 +48,32 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-#user-input {
-  padding: 1rem;
-  max-width: 30rem;
-  margin: 2rem auto;
-  border-radius: 4px;
-  background: linear-gradient(180deg, #307e6c, #2b996d);
-}
-
-.input-group {
-  display: flex;
-  justify-content: space-evenly;
-  gap: 1.5rem;
-}
-
-#user-input label {
-  display: block;
-  margin-bottom: 0.25rem;
-  font-family: "Roboto Condensed", sans-serif;
-  font-size: 0.5rem;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-#user-input input {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #76c0ae;
-  border-radius: 0.25rem;
-  background-color: transparent;
-  color: #c2e9e0;
-  font-size: 1rem;
-}
-
-#result {
-  max-width: 50rem;
-  margin: 2rem auto;
-  padding: 1rem;
-  table-layout: fixed;
-  border-spacing: 1rem;
-  text-align: right;
-  border-collapse: collapse;
-  width: 100%;
-}
-
-#result thead {
-  font-size: 0.7rem;
-  color: #83e6c0;
-}
-
-#result tbody {
-  font-family: "Roboto Condensed", sans-serif;
-  font-size: 0.85rem;
-  color: #c2e9e0;
-}
-
-#result th,
-#result td {
-  border: 1px solid #83e6c0;
-  padding: 8px;
-}
-
-#result th {
-  background-color: #83e6c0;
-  color: #1a1f1d;
-  text-align: center;
-}
-
-#result tbody tr:nth-child(even) {
-  background-color: #1a1f1d;
-}
-
-#result td:last-child {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-#result button {
-  margin: 3px 0;
+  height: 100%;
 }
 
 .center {
+  text-align: center;
+}
+
+footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #ccc;
+  padding: 10px;
+}
+
+.error-text {
+  color: crimson;
+  font-weight: bold;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.info-text {
+  color: #ccc;
+  font-weight: bold;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
   text-align: center;
 }
