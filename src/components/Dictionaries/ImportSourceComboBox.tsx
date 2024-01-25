@@ -33,7 +33,7 @@ const ImportSourceComboBox: React.FC<ImportSourceComboBoxProps> = (props) => {
     ));
     importSourcesComboBox = (
       <div>
-        <label htmlFor="importSource"></label>
+        <label htmlFor="importSource">Źródło importu</label>
         <select id="importSource" value={value || ""} onChange={handleChange}>
           <option value="" disabled>
             Wybierz źródło importu
