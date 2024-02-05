@@ -124,7 +124,7 @@ const TransactionDetails: React.FC<ITransactionDetailsProps> = ({
           initialValue={transaction.contractorBankName || ""}
           onValueChange={handlePropertyChange}
         />
-        {transaction.amount >= 0 && (
+        {transaction.amount < 0 && (
           <CategoryProperty
             name="categoryId"
             initialValue={transaction.category}

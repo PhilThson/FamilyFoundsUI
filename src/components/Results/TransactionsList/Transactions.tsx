@@ -23,32 +23,31 @@ const Transactions: React.FC<TransactionListProps> = (props) => {
     (state) => state.transactions.transactions
   );
 
-  const [orderedTransactions, setOrderedTransactions] = useState<
-    ITransaction[]
-  >(orderByDate(transactions, true));
-
   const [sortedBy, setSortedBy] = useState<ISortable>({
     column: "date",
     ascending: true,
   });
 
   const handleOrderByDate = () => {
-    console.log("Order by date invoked.");
     setSortedBy((previous) => ({
       column: "date",
       ascending: !previous.ascending,
     }));
-    setOrderedTransactions((previous) =>
-      orderByDate(previous, !sortedBy.ascending)
-    );
   };
 
   const handleOrderByCategory = () => {
-    setSortedBy((prev) => ({ column: "category", ascending: !prev.ascending }));
-    setOrderedTransactions((previous) =>
-      orderByCategory(previous, !sortedBy.ascending)
-    );
+    setSortedBy((previous) => ({
+      column: "category",
+      ascending: !previous.ascending,
+    }));
   };
+
+  let orderedTransactions;
+  if (sortedBy.column === "date") {
+    orderedTransactions = orderByDate(transactions, sortedBy.ascending);
+  } else {
+    orderedTransactions = orderByCategory(transactions, sortedBy.ascending);
+  }
 
   return (
     <table className={styles.transactions}>
