@@ -5,12 +5,14 @@ import { useAppSelector } from "./hooks/hooks";
 import Footer from "./components/Layout/Footer";
 import Actions from "./components/Actions/Actions";
 import ResultsArea from "./components/Results/ResultsArea";
+import LoginButton from "./components/Login/LoginButton";
 
 function App() {
   const notification = useAppSelector((state) => state.ui.notification);
 
   return (
     <div className="layout">
+      <LoginButton />
       <Header title="Fundusze rodzinne" />
       {notification && <Notification notification={notification} />}
       <main>

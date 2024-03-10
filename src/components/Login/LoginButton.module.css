@@ -1,0 +1,21 @@
+.login-container {
+  position: sticky;
+  max-width: 80rem;
+  display: flex;
+  justify-content: flex-end;
+  top: 3rem;
+  z-index: 3;
+}
+
+.login-button {
+  background: transparent;
+  border: none;
+  color: #ccc;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.login-button:hover {
+  color: #aaa;
+}

@@ -29,6 +29,24 @@ export interface IActionState {
   error: string | null;
 }
 
+export interface IAuthState {
+  name?: string;
+  email?: string;
+  accessToken?: string;
+  isLoggedIn: boolean;
+  loginState: IActionState;
+}
+
+export interface IAuthenticateRequest {
+  email: string;
+  password: string;
+}
+
+export interface IAuthenticateResponse {
+  jwtToken: string;
+  refreshToken: string;
+}
+
 export interface ISummaryData {
   totalDebit: number;
   totalCredit: number;

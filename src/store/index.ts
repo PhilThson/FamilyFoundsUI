@@ -3,6 +3,7 @@ import transactionSliceReducer from "./transaction-slice";
 import uiSliceReducer from "./ui-slice";
 import categorySliceReducer from "./category-slice";
 import importSourceSliceReducer from "./importSource-slice";
+import authSliceReducer from "./auth-slice";
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     ui: uiSliceReducer,
     categories: categorySliceReducer,
     importSources: importSourceSliceReducer,
+    auth: authSliceReducer,
   },
 });
 

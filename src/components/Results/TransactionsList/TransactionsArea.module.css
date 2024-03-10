@@ -5,4 +5,7 @@
   border: 1px solid #83e6c0;
   border-radius: 0.5rem;
   max-height: 60vh;
+  background: radial-gradient(#303b37, #1a1f1d);
+  position: relative;
+  z-index: 5;
 }
