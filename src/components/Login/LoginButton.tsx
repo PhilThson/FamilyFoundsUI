@@ -15,13 +15,15 @@ const LoginButton: React.FC = () => {
 
   return (
     <>
-      <div className={styles["login-container"]}>
-        <button
-          onClick={handleShowLoginForm}
-          className={styles["login-button"]}
-        >
-          Zaloguj
-        </button>
+      <div className={styles["sticky-header"]}>
+        <div className={styles["login-container"]}>
+          <button
+            onClick={handleShowLoginForm}
+            className={styles["login-button"]}
+          >
+            Zaloguj
+          </button>
+        </div>
       </div>
       {isFormVisible && <LoginForm onClose={handleCloseLoginForm} />}
     </>

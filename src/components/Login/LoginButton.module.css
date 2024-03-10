@@ -1,10 +1,16 @@
-.login-container {
+.sticky-header {
   position: sticky;
-  max-width: 80rem;
-  display: flex;
-  justify-content: flex-end;
   top: 3rem;
+  width: 100%;
+  max-width: 75rem;
+  display: flex;
+  flex-direction: column;
   z-index: 3;
+  padding-right: 2rem;
+}
+
+.login-container {
+  align-self: flex-end;
 }
 
 .login-button {
