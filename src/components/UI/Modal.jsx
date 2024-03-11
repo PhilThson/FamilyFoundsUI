@@ -6,21 +6,23 @@ const Backdrop = (props) => {
   return <div className={styles.backdrop} onClick={props.onClick} />;
 };
 
-const ModalOverlay = (props) => {
-  return <Card className={styles.modal}>{props.children}</Card>;
+const ModalOverlay = ({ children, ...rest }) => {
+  return (
+    <Card className={styles.modal} {...rest}>
+      {children}
+    </Card>
+  );
 };
 
-const Modal = (props) => {
+const Modal = ({ onCloseModal, children, ...rest }) => {
   return (
     <>
       {ReactDOM.createPortal(
-        <Backdrop onClick={props.onCloseModal} />,
+        <Backdrop onClick={onCloseModal} />,
         document.getElementById("backdrop-root")
       )}
       {ReactDOM.createPortal(
-        <ModalOverlay onCloseModal={props.onCloseModal}>
-          {props.children}
-        </ModalOverlay>,
+        <ModalOverlay {...rest}>{children}</ModalOverlay>,
         document.getElementById("modal-root")
       )}
     </>

@@ -1,6 +1,5 @@
 import type { ComponentProps } from "react";
 import { useState } from "react";
-import styles from "./UserInput.module.css";
 
 interface InputGroupProps extends ComponentProps<"input"> {
   id: string;
@@ -32,7 +31,7 @@ const UserInput: React.FC<InputGroupProps> = ({
     <div className={isValid === true ? "" : invalidClass}>
       <label htmlFor={id}>{name}</label>
       <input id={id} onBlur={handleBlur} {...rest} />
-      {isValid === false && <p className={styles["error-text"]}>{errorText}</p>}
+      {isValid === false && <p className="error-text">{errorText}</p>}
     </div>
   );
 };

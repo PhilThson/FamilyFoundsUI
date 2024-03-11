@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { jwtDecode } from "jwt-decode";
 import {
   IActionState,
   IAuthState,
@@ -12,9 +13,9 @@ const initActionState: IActionState = {
 };
 
 const initState: IAuthState = {
-  name: "",
-  email: "",
-  accessToken: "",
+  name: null,
+  email: null,
+  accessToken: null,
   isLoggedIn: false,
   loginState: initActionState,
 };
@@ -34,6 +35,8 @@ const auth = createSlice({
         (state, action: { payload: IAuthenticateResponse; type: string }) => {
           state.loginState.status = "success";
           state.accessToken = action.payload.jwtToken;
+          console.log(state.accessToken);
+          console.log(jwtDecode(state.accessToken));
         }
       )
       .addCase(login.pending, (state) => {

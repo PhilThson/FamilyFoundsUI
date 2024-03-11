@@ -30,9 +30,9 @@ export interface IActionState {
 }
 
 export interface IAuthState {
-  name?: string;
-  email?: string;
-  accessToken?: string;
+  name: null | string;
+  email: null | string;
+  accessToken: null | string;
   isLoggedIn: boolean;
   loginState: IActionState;
 }
