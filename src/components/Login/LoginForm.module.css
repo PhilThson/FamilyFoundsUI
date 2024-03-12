@@ -33,6 +33,20 @@
   font-size: 1rem;
 }
 
+.invalid input,
+.invalid select {
+  border: 1px solid #b40e0e;
+  background-color: #fddddd;
+  color: #373737;
+}
+
+.invalid input:focus,
+.invalid select:focus {
+  border-color: #ff8800;
+  background-color: #fbe8d2;
+  color: #373737;
+}
+
 .validation-message {
   color: crimson;
   font-weight: 700;
@@ -74,4 +88,11 @@
 .actions .button-save {
   background-color: #39443f;
   color: white;
+}
+
+.actions .button-save:disabled {
+  background-color: #ccc;
+  color: #373737;
+  cursor: not-allowed;
+  border: none;
 }

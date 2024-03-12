@@ -102,7 +102,6 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
       validateTransaction("date", transaction.date);
       return;
     }
-    console.log("new transaction:", transaction);
     dispatch(addNewTransaction(transaction));
   };
 
