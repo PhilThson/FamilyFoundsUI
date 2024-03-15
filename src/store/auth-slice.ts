@@ -24,8 +24,9 @@ const auth = createSlice({
   name: "auth",
   initialState: initState,
   reducers: {
-    logout(state) {
-      state = initState;
+    logout: () => initState,
+    clearLoginState(state) {
+      state.loginState = initActionState;
     },
   },
   extraReducers(builder) {
@@ -35,8 +36,9 @@ const auth = createSlice({
         (state, action: { payload: IAuthenticateResponse; type: string }) => {
           state.loginState.status = "success";
           state.accessToken = action.payload.jwtToken;
-          console.log(state.accessToken);
-          console.log(jwtDecode(state.accessToken));
+          state.isLoggedIn = true;
+          const { sub } = jwtDecode(state.accessToken);
+          state.name = sub || "";
         }
       )
       .addCase(login.pending, (state) => {
@@ -49,4 +51,5 @@ const auth = createSlice({
   },
 });
 
+export const authSliceActions = auth.actions;
 export default auth.reducer;

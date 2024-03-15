@@ -13,7 +13,7 @@
   align-self: flex-end;
 }
 
-.login-button {
+.link-button {
   background: transparent;
   border: none;
   color: #ccc;
@@ -22,6 +22,15 @@
   font-size: 1rem;
 }
 
-.login-button:hover {
+.link-button:hover {
   color: #aaa;
+}
+
+.logged-in {
+  color: #ccc;
+}
+
+.logged-in span {
+  font-style: italic;
+  margin-right: 1rem;
 }

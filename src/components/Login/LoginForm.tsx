@@ -1,9 +1,10 @@
 import Modal from "../UI/Modal";
 import UserInput from "../UserInputArea/UserInput";
-import { IAuthenticateRequest } from "../../models/Main";
+import { IActionState, IAuthenticateRequest } from "../../models/Main";
 import { ChangeEvent, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { useAppDispatch } from "../../hooks/hooks";
 import { login } from "../../store/auth-actions";
+import sha256 from "crypto-js/sha256";
 
 import styles from "./LoginForm.module.css";
 import Spinner from "../UI/Spinner";
@@ -14,8 +15,10 @@ const initLoginData = {
 };
 const emailRegex = new RegExp("^[^@]+@[^@]+.[^@]+$");
 
-const LoginForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-  const loginState = useAppSelector((state) => state.auth.loginState);
+const LoginForm: React.FC<{
+  onClose: () => void;
+  loginState: IActionState;
+}> = ({ onClose, loginState }) => {
   const dispatch = useAppDispatch();
 
   const [loginData, setLoginData] =
@@ -23,6 +26,11 @@ const LoginForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [isTouched, setIsTouched] = useState(false);
   const [emailIsValid, setEmailIsValid] = useState(true);
   const [passwordIsValid, setPasswordIsValid] = useState(true);
+
+  const handleClose = () => {
+    setLoginData(initLoginData);
+    onClose();
+  };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setLoginData((previous) => ({
@@ -58,15 +66,18 @@ const LoginForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   }
 
   let statusContent;
-  if (loginState.status === "pending") {
-    statusContent = <Spinner text="Logowanie..." />;
-  } else if (loginState.status === "error") {
-    statusContent = <p className={styles["error-text"]}>{loginState.error}</p>;
-  } else if (loginState.status === "success") {
-    onClose();
+  switch (loginState.status) {
+    case "pending":
+      statusContent = <Spinner text="Logowanie..." />;
+      break;
+    case "error":
+      statusContent = <p className="error-text">{loginState.error}</p>;
+      break;
+    default:
+      break;
   }
 
-  const handleLogin = (event: React.FormEvent) => {
+  const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!loginDataIsValid) {
       validateLoginData("email", loginData.email);
@@ -74,13 +85,17 @@ const LoginForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       return;
     }
 
-    dispatch(login(loginData));
+    const authRequest: IAuthenticateRequest = {
+      email: loginData.email,
+      password: sha256(loginData.password + "/T}qRj&)T-89i}").toString(),
+    };
+    dispatch(login(authRequest));
     setLoginData(initLoginData);
   };
 
   return (
     <Modal
-      onCloseModal={onClose}
+      onCloseModal={handleClose}
       style={{ width: "25rem", left: "calc(50% - 12rem)" }}
     >
       <h2 style={{ paddingLeft: "1rem" }}>Logowanie</h2>
@@ -127,7 +142,7 @@ const LoginForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           >
             Zapisz
           </button>
-          <button className={styles["button-close"]} onClick={onClose}>
+          <button className={styles["button-close"]} onClick={handleClose}>
             Zamknij
           </button>
         </div>
