@@ -4,6 +4,10 @@ export async function client(endpoint, { body, isForm, ...customConfig } = {}) {
     "Content-Type": "application/json",
   };
 
+  if (customConfig.auth && customConfig.auth.isLoggedIn) {
+    headers["Authorization"] = `Bearer ${customConfig.auth.accessToken}`;
+  }
+
   const config = {
     method: body ? 'POST' : 'GET',
     ...customConfig,

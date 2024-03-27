@@ -20,7 +20,7 @@ const importSourceSlice = createSlice({
         fetchAllImportSources.fulfilled,
         (state, action: { payload: IImportSource[]; type: string }) => {
           state.fetchAllState.status = "success";
-          state.importSources = action.payload;
+          state.importSources = action.payload as IImportSource[];
         }
       )
       .addCase(fetchAllImportSources.pending, (state) => {

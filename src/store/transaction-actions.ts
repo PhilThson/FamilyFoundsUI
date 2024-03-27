@@ -5,19 +5,22 @@ import { client } from "../utils/api-client";
 import { CreateTransactionDto } from "../models/Create";
 import { AppDispatch } from ".";
 import { UpdateTransactionDto } from "../models/Update";
-import { IDateRange, ITransaction } from "../models/Main";
+import { IApiError, IDateRange, ITransaction } from "../models/Main";
+import type { RootState } from ".";
 
 export const fetchAllTransactions = createAsyncThunk(
   "transactions/fetchAllTransactions",
-  async (dateRange: IDateRange) => {
+  async (dateRange: IDateRange, { getState }) => {
     try {
       const queryData = `?startDate=${dateRange.startDate}&endDate=${dateRange.endDate}`;
-      const response = await client.get(TRANSACTIONS_API_URL + queryData);
+      const response = await client.get(TRANSACTIONS_API_URL + queryData, {
+        auth: (getState() as RootState).auth,
+      });
       return response.data;
     } catch (err) {
       return Promise.reject(
-        (err as Error)?.message
-          ? (err as Error)?.message
+        (err as IApiError)?.Message
+          ? (err as IApiError)?.Message
           : "Wystąpił błąd podczas pobierania listy transakcji."
       );
     }
@@ -26,7 +29,7 @@ export const fetchAllTransactions = createAsyncThunk(
 //<ThunkAction<void, RootState, unknown, UnknownAction>>
 export const addNewTransaction = createAsyncThunk(
   "transactions/addNewTransaction",
-  async (transaction: CreateTransactionDto, { dispatch }) => {
+  async (transaction: CreateTransactionDto, { dispatch, getState }) => {
     try {
       const transactionToSend: CreateTransactionDto = {
         ...transaction,
@@ -41,7 +44,9 @@ export const addNewTransaction = createAsyncThunk(
 
       const response = await client.post(
         TRANSACTIONS_API_URL,
-        transactionToSend
+        transactionToSend,
+        false, //isForm
+        { auth: (getState() as RootState).auth }
       );
       dispatch(
         uiSliceActions.showNotification({
@@ -60,8 +65,8 @@ export const addNewTransaction = createAsyncThunk(
         })
       );
       return Promise.reject(
-        (err as Error)?.message
-          ? (err as Error)?.message
+        (err as IApiError)?.Message
+          ? (err as IApiError)?.Message
           : "Wystąpił błąd podczas dodawania transakcji."
       );
     }
@@ -75,9 +80,11 @@ export const updateTransaction = createAsyncThunk(
   //   { dispatch: AppDispatch }
   // >
   "transactions/updateTransaction",
-  async (transaction: UpdateTransactionDto, { dispatch }) => {
+  async (transaction: UpdateTransactionDto, { dispatch, getState }) => {
     try {
-      const response = await client.put(TRANSACTIONS_API_URL, transaction);
+      const response = await client.put(TRANSACTIONS_API_URL, transaction, {
+        auth: (getState() as RootState).auth,
+      });
       dispatch(
         uiSliceActions.showNotification({
           status: "success",
@@ -95,8 +102,8 @@ export const updateTransaction = createAsyncThunk(
         })
       );
       return Promise.reject(
-        (err as Error)?.message
-          ? (err as Error)?.message
+        (err as IApiError)?.Message
+          ? (err as IApiError)?.Message
           : "Wystąpił błąd podczas dodawania transakcji."
       );
     }
@@ -108,39 +115,45 @@ export const deleteTransaction = createAsyncThunk<
   number,
   {
     dispatch: AppDispatch;
-    // state: State
+    // state: RootState;
     // extra: {
     //   jwt: string
     // }
   }
->("transactions/deleteTransaction", async (id: number, { dispatch }) => {
-  try {
-    await client.delete(`${TRANSACTIONS_API_URL}/${id}`);
-    return id;
-  } catch (err) {
-    dispatch(
-      uiSliceActions.showNotification({
-        status: "error",
-        title: "Błąd",
-        message: "Błąd usuwania transakcji.",
-      })
-    );
-    return Promise.reject(
-      (err as Error)?.message
-        ? (err as Error)?.message
-        : "Wystąpił błąd podczas usuwania transakcji."
-    );
+>(
+  "transactions/deleteTransaction",
+  async (id: number, { dispatch, getState }) => {
+    try {
+      await client.delete(`${TRANSACTIONS_API_URL}/${id}`, {
+        auth: (getState() as RootState).auth,
+      });
+      return id;
+    } catch (err) {
+      dispatch(
+        uiSliceActions.showNotification({
+          status: "error",
+          title: "Błąd",
+          message: "Błąd usuwania transakcji.",
+        })
+      );
+      return Promise.reject(
+        (err as IApiError)?.Message
+          ? (err as IApiError)?.Message
+          : "Wystąpił błąd podczas usuwania transakcji."
+      );
+    }
   }
-});
+);
 
 export const importTransactionsFromCsv = createAsyncThunk(
   "transactions/importTransactionsFromCsv",
-  async (formData: FormData, { dispatch }) => {
+  async (formData: FormData, { dispatch, getState }) => {
     try {
       const response = await client.post(
         `${TRANSACTIONS_API_URL}/import`,
         formData,
-        true //isForm
+        true, //isForm
+        { auth: (getState() as RootState).auth }
       );
       dispatch(
         uiSliceActions.showNotification({
@@ -159,8 +172,8 @@ export const importTransactionsFromCsv = createAsyncThunk(
         })
       );
       return Promise.reject(
-        (err as Error)?.message
-          ? (err as Error)?.message
+        (err as IApiError)?.Message
+          ? (err as IApiError)?.Message
           : "Wystąpił błąd podczas importowania listy transakcji."
       );
     }

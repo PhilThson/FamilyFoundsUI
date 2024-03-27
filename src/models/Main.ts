@@ -1,3 +1,7 @@
+export interface IApiError {
+  Message?: string;
+}
+
 export interface ITransaction {
   id: number;
   title: string;

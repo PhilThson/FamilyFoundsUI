@@ -1,17 +1,22 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { client } from "../utils/api-client";
 import { CATEGORIES_API_URL } from "../settings/constants";
+import { RootState } from ".";
+import { IApiError } from "../models/Main";
 
 export const fetchAllCategories = createAsyncThunk(
   "categories/fetchAllCategories",
-  async () => {
+  async (_, { getState }) => {
     try {
-      const response = await client.get(CATEGORIES_API_URL);
+      const response = await client.get(CATEGORIES_API_URL, {
+        auth: (getState() as RootState).auth,
+      });
       return response.data;
     } catch (err) {
-      console.error("Catch err:", err);
       return Promise.reject(
-        "Wystąpił błąd podczas pobierania listy kategorii."
+        (err as IApiError)?.Message
+          ? (err as IApiError)?.Message
+          : "Wystąpił błąd podczas pobierania listy kategorii."
       );
     }
   }
