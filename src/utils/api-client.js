@@ -10,6 +10,7 @@ export async function client(endpoint, { body, isForm, ...customConfig } = {}) {
 
   const config = {
     method: body ? 'POST' : 'GET',
+    credentials: "include",
     ...customConfig,
     headers: {
       ...headers,
