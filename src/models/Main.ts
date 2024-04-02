@@ -2,6 +2,32 @@ export interface IApiError {
   Message?: string;
 }
 
+export class FetchError {
+  constructor(message?: string, statusCode?: number) {
+    this.message = message;
+    this.statusCode = statusCode;
+  }
+  message?: string;
+  statusCode?: number;
+}
+
+export class FetchClientData {
+  body?: {};
+  isForm?: boolean = false;
+  customConfig?: ICustomConfig;
+  auth?: IAuthState;
+  method?: string;
+}
+
+export interface ICustomConfig {
+  mode?: string;
+  cache?: string;
+  credentials?: string;
+  headers?: Record<string, string>;
+  redirect?: string;
+  referrerPolicy?: string;
+}
+
 export interface ITransaction {
   id: number;
   title: string;
