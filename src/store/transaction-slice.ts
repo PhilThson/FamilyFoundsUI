@@ -5,6 +5,7 @@ import {
   IActionState,
   ISummaryData,
   ICategorySum,
+  IDateRange,
 } from "../models/Main";
 import {
   fetchAllTransactions,
@@ -13,6 +14,8 @@ import {
   deleteTransaction,
   importTransactionsFromCsv,
 } from "./transaction-actions";
+import { apiSlice } from "../utils/api/api-slice";
+import { TRANSACTIONS_URL } from "../settings/constants";
 
 const initActionState: IActionState = {
   status: "idle",
@@ -152,3 +155,15 @@ const computeSummary = (items: ITransaction[]): ISummaryData => {
 
 export const transactionActions = transactionSlice.actions;
 export default transactionSlice.reducer;
+
+export const transactionsApiSlice = apiSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    getTransactions: builder.query({
+      query: (dateRange: IDateRange) =>
+        TRANSACTIONS_URL +
+        `?startDate=${dateRange.startDate}&endDate=${dateRange.endDate}`,
+    }),
+  }),
+});
+
+export const { useGetTransactionsQuery } = transactionsApiSlice;

@@ -1,3 +1,5 @@
+import { BaseQueryApi, FetchArgs } from "@reduxjs/toolkit/dist/query";
+
 export interface IApiError {
   Message?: string;
 }
@@ -12,7 +14,7 @@ export class FetchError {
 }
 
 export class FetchClientData {
-  body?: {};
+  body?: {} | string | null = null;
   isForm?: boolean = false;
   customConfig?: ICustomConfig;
   auth?: IAuthState;
@@ -26,6 +28,32 @@ export interface ICustomConfig {
   headers?: Record<string, string>;
   redirect?: string;
   referrerPolicy?: string;
+}
+
+export interface IMyRequestInit {
+  headers: {
+    [x: string]: string;
+  };
+  credentials: string;
+  method?: string;
+  body?: {} | null;
+  mode?: string | undefined;
+  cache?: string | undefined;
+  redirect?: string | undefined;
+  referrerPolicy?: string | undefined;
+}
+
+export interface IBaseQueryArgs {
+  args: string | FetchArgs;
+  api: BaseQueryApi;
+  extraOptions: {};
+}
+
+export interface ApiClientResponse {
+  status: number;
+  data: any;
+  headers: Headers;
+  url: string;
 }
 
 export interface ITransaction {

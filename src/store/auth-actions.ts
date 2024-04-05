@@ -14,9 +14,6 @@ export const login = createAsyncThunk(
     try {
       const response = await client.post(AUTH_URL, {
         body: loginData,
-        customConfig: {
-          credentials: "include",
-        },
       });
       dispatch(
         uiSliceActions.showNotification({

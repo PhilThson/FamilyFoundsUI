@@ -1,15 +1,23 @@
 import { useAppSelector } from "../../hooks/hooks";
 import { ImportSourceComboBoxProps } from "../../models/Main";
 import Spinner from "../UI/Spinner";
+import { useGetImportSourcesQuery } from "../../store/importSource-slice";
 
 const ImportSourceComboBox: React.FC<ImportSourceComboBoxProps> = (props) => {
   const { value, onSelectChange } = props;
-  const importSources = useAppSelector(
-    (state) => state.importSources.importSources
-  );
-  const importSourcesState = useAppSelector(
-    (state) => state.importSources.fetchAllState
-  );
+  // const importSources = useAppSelector(
+  //   (state) => state.importSources.importSources
+  // );
+  // const importSourcesState = useAppSelector(
+  //   (state) => state.importSources.fetchAllState
+  // );
+  const {
+    data: importSources,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetImportSourcesQuery();
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
@@ -18,14 +26,11 @@ const ImportSourceComboBox: React.FC<ImportSourceComboBoxProps> = (props) => {
   };
 
   let importSourcesComboBox;
-  if (importSourcesState.status === "pending") {
+  if (isLoading) {
     importSourcesComboBox = (
       <Spinner text="Pobieranie źródeł importu..." size="3rem" />
     );
-  } else if (
-    importSourcesState.status === "success" &&
-    importSources.length > 0
-  ) {
+  } else if (isSuccess && importSources.length > 0) {
     const importSourceOptions = importSources.map((importSource) => (
       <option key={importSource.id} value={importSource.id}>
         {importSource.name}
@@ -42,10 +47,10 @@ const ImportSourceComboBox: React.FC<ImportSourceComboBoxProps> = (props) => {
         </select>
       </div>
     );
-  } else if (importSourcesState.status === "error") {
+  } else if (isError) {
     importSourcesComboBox = (
       <div>
-        <p className="error-text">{importSourcesState.error}</p>
+        <p className="error-text">{error?.toString()}</p>
       </div>
     );
   } else {

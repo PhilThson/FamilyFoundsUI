@@ -3,8 +3,9 @@ import UserInput from "../UserInputArea/UserInput";
 import { IActionState, IAuthenticateRequest } from "../../models/Main";
 import { ChangeEvent, useState } from "react";
 import { useAppDispatch } from "../../hooks/hooks";
-import { login } from "../../store/auth-actions";
 import sha256 from "crypto-js/sha256";
+import { useLoginMutation } from "../../store/auth-slice";
+import { authSliceActions } from "../../store/auth-slice";
 
 import styles from "./LoginForm.module.css";
 import Spinner from "../UI/Spinner";
@@ -26,6 +27,8 @@ const LoginForm: React.FC<{
   const [isTouched, setIsTouched] = useState(false);
   const [emailIsValid, setEmailIsValid] = useState(true);
   const [passwordIsValid, setPasswordIsValid] = useState(true);
+
+  const [logIn, { isLoading, isError, error }] = useLoginMutation();
 
   const handleClose = () => {
     setLoginData(initLoginData);
@@ -66,16 +69,21 @@ const LoginForm: React.FC<{
   }
 
   let statusContent;
-  switch (loginState.status) {
-    case "pending":
-      statusContent = <Spinner text="Logowanie..." />;
-      break;
-    case "error":
-      statusContent = <p className="error-text">{loginState.error}</p>;
-      break;
-    default:
-      break;
+  if (isLoading) {
+    statusContent = <Spinner text="Logowanie..." />;
+  } else if (isError) {
+    statusContent = <p className="error-text">{error?.toString()}</p>;
   }
+  // switch (loginState.status) {
+  //   case "pending":
+  //     statusContent = <Spinner text="Logowanie..." />;
+  //     break;
+  //   case "error":
+  //     statusContent = <p className="error-text">{loginState.error}</p>;
+  //     break;
+  //   default:
+  //     break;
+  // }
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -89,7 +97,11 @@ const LoginForm: React.FC<{
       email: loginData.email,
       password: sha256(loginData.password + "/T}qRj&)T-89i}").toString(),
     };
-    dispatch(login(authRequest));
+    //dispatch(login(authRequest));
+    try {
+      const response = await logIn(authRequest).unwrap();
+      dispatch(authSliceActions.updateLoginState(response));
+    } catch (err) {}
     setLoginData(initLoginData);
   };
 
@@ -132,13 +144,12 @@ const LoginForm: React.FC<{
             />
           </div>
         </div>
-
         {statusContent}
         <div className={styles.actions}>
           <button
             className={styles["button-save"]}
             type="submit"
-            disabled={!loginDataIsValid || loginState.status === "pending"}
+            disabled={!loginDataIsValid || isLoading} //loginState.status === "pending"}
           >
             Zapisz
           </button>

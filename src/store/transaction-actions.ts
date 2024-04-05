@@ -10,12 +10,16 @@ import type { RootState } from ".";
 
 export const fetchAllTransactions = createAsyncThunk(
   "transactions/fetchAllTransactions",
-  async (dateRange: IDateRange, { getState }) => {
+  async (dateRange: IDateRange, { dispatch, getState }) => {
     try {
       const queryData = `?startDate=${dateRange.startDate}&endDate=${dateRange.endDate}`;
-      const response = await client.get(TRANSACTIONS_URL + queryData, {
-        auth: (getState() as RootState).auth,
-      });
+      const response = await client.get(
+        TRANSACTIONS_URL + queryData,
+        {
+          auth: (getState() as RootState).auth,
+        },
+        dispatch as AppDispatch
+      );
       return response.data;
     } catch (err) {
       return Promise.reject(
