@@ -1,6 +1,6 @@
 import Modal from "../UI/Modal";
 import UserInput from "../UserInputArea/UserInput";
-import { IActionState, IAuthenticateRequest } from "../../models/Main";
+import { IAuthenticateRequest } from "../../models/Main";
 import { ChangeEvent, useState } from "react";
 import { useAppDispatch } from "../../hooks/hooks";
 import sha256 from "crypto-js/sha256";
@@ -9,6 +9,7 @@ import { authSliceActions } from "../../store/auth-slice";
 
 import styles from "./LoginForm.module.css";
 import Spinner from "../UI/Spinner";
+import { uiSliceActions } from "../../store/ui-slice";
 
 const initLoginData = {
   email: "",
@@ -18,8 +19,7 @@ const emailRegex = new RegExp("^[^@]+@[^@]+.[^@]+$");
 
 const LoginForm: React.FC<{
   onClose: () => void;
-  loginState: IActionState;
-}> = ({ onClose, loginState }) => {
+}> = ({ onClose }) => {
   const dispatch = useAppDispatch();
 
   const [loginData, setLoginData] =
@@ -51,15 +51,10 @@ const LoginForm: React.FC<{
   };
 
   const validateLoginData = (id: string, value: string) => {
-    switch (id) {
-      case "email":
-        setEmailIsValid(emailRegex.test(value));
-        break;
-      case "password":
-        setPasswordIsValid(value.length >= 6);
-        break;
-      default:
-        break;
+    if (id === "email") {
+      setEmailIsValid(emailRegex.test(value));
+    } else {
+      setPasswordIsValid(value.length >= 6);
     }
   };
 
@@ -74,16 +69,6 @@ const LoginForm: React.FC<{
   } else if (isError) {
     statusContent = <p className="error-text">{error?.toString()}</p>;
   }
-  // switch (loginState.status) {
-  //   case "pending":
-  //     statusContent = <Spinner text="Logowanie..." />;
-  //     break;
-  //   case "error":
-  //     statusContent = <p className="error-text">{loginState.error}</p>;
-  //     break;
-  //   default:
-  //     break;
-  // }
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -97,11 +82,19 @@ const LoginForm: React.FC<{
       email: loginData.email,
       password: sha256(loginData.password + "/T}qRj&)T-89i}").toString(),
     };
-    //dispatch(login(authRequest));
     try {
       const response = await logIn(authRequest).unwrap();
       dispatch(authSliceActions.updateLoginState(response));
-    } catch (err) {}
+      dispatch(
+        uiSliceActions.showNotification({
+          status: "success",
+          title: "Sukces",
+          message: "Zalogowano!",
+        })
+      );
+    } catch (err) {
+      console.error("Wystąpił błąd podczas logowania.", err);
+    }
     setLoginData(initLoginData);
   };
 
@@ -149,7 +142,7 @@ const LoginForm: React.FC<{
           <button
             className={styles["button-save"]}
             type="submit"
-            disabled={!loginDataIsValid || isLoading} //loginState.status === "pending"}
+            disabled={!loginDataIsValid || isLoading}
           >
             Zapisz
           </button>

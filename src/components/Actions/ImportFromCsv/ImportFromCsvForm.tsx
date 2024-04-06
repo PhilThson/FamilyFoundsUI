@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Modal from "../../UI/Modal";
 import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
 import { importTransactionsFromCsv } from "../../../store/transaction-actions";
 import styles from "./ImportFromCsvForm.module.css";
 import ImportSourceComboBox from "../../Dictionaries/ImportSourceComboBox";
-import { fetchAllImportSources } from "../../../store/importSource-actions";
 import Spinner from "../../UI/Spinner";
-import { useGetImportSourcesQuery } from "../../../store/importSource-slice";
 
 const ImportFromCsvForm: React.FC<{ onImportClose: () => void }> = ({
   onImportClose,
@@ -15,20 +13,8 @@ const ImportFromCsvForm: React.FC<{ onImportClose: () => void }> = ({
   const [importSourceId, setImportSourceId] = useState<number | null>(null);
   const [isInfoVisible, setIsInfoVisible] = useState<boolean>(false);
 
-  const {
-    data: importSources,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
-  } = useGetImportSourcesQuery();
-
   const dispatch = useAppDispatch();
-  // const importState = useAppSelector((state) => state.transactions.importState);
-
-  // useEffect(() => {
-  //   dispatch(fetchAllImportSources());
-  // }, [dispatch]);
+  const importState = useAppSelector((state) => state.transactions.importState);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -84,15 +70,19 @@ const ImportFromCsvForm: React.FC<{ onImportClose: () => void }> = ({
             />
           </div>
         </div>
-        {isError && <p className="error-text">{error.toString()}</p>}
+        {importState.status === "error" && (
+          <p className="error-text">{importState.error}</p>
+        )}
         {isInfoVisible && <p className="info-text">Należy wskazać plik .csv</p>}
-        {isLoading && (
+        {importState.status === "pending" && (
           <Spinner text="Trwa importowanie transakcji..." size="3rem" />
         )}
         <div className={styles["form-actions"]}>
           <button
             type="submit"
-            disabled={!file || !importSourceId || isLoading}
+            disabled={
+              !file || !importSourceId || importState.status === "pending"
+            }
           >
             Importuj
           </button>

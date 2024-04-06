@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styles from "./CategoryProperty.module.css";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
-import { useAppSelector, useAppDispatch } from "../../../hooks/hooks";
-import { fetchAllCategories } from "../../../store/category-actions";
 import { ICategory, ICategoryPropertyProps } from "../../../models/Main";
+import { useGetCategoriesQuery } from "../../../store/category-slice";
+import Spinner from "../../UI/Spinner";
 
 const CategoryProperty: React.FC<ICategoryPropertyProps> = ({
   name,
@@ -13,12 +13,14 @@ const CategoryProperty: React.FC<ICategoryPropertyProps> = ({
 }) => {
   const [category, setCategory] = useState<ICategory | undefined>(initialValue);
   const [isEditing, setIsEditing] = useState(false);
-  const categories = useAppSelector((state) => state.categories.categories);
-  const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(fetchAllCategories());
-  }, [dispatch]);
+  const {
+    data: categories,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetCategoriesQuery();
 
   const handleEditClick = () => {
     setIsEditing((previous) => !previous);
@@ -28,7 +30,7 @@ const CategoryProperty: React.FC<ICategoryPropertyProps> = ({
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const choice = categories.find(
+    const choice = categories?.find(
       (category) => category.id === +event.target.value
     );
     if (choice) {
@@ -37,7 +39,7 @@ const CategoryProperty: React.FC<ICategoryPropertyProps> = ({
   };
 
   let categoriesComboBox;
-  if (categories && categories.length > 0) {
+  if (isSuccess && categories.length > 0) {
     const categoryOptions = categories.map((category) => (
       <option key={category.id} value={category.id}>
         {category.name}
@@ -49,11 +51,14 @@ const CategoryProperty: React.FC<ICategoryPropertyProps> = ({
         {categoryOptions}
       </select>
     );
+  } else if (isLoading) {
+    categoriesComboBox = <Spinner text="Pobieranie kategorii..." size="3rem" />;
   } else {
     categoriesComboBox = (
       <div>
         <p className={styles["info-text"]}>
-          Nie udało się pobrać listy kategorii
+          Nie udało się pobrać listy kategorii.
+          {error?.toString()}
         </p>
       </div>
     );

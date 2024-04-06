@@ -92,7 +92,6 @@ export interface IAuthState {
   email: null | string;
   accessToken: null | string;
   isLoggedIn: boolean;
-  loginState: IActionState;
 }
 
 export interface IAuthenticateRequest {
@@ -151,8 +150,6 @@ export interface ICategory {
 
 export class CategoryState {
   categories: ICategory[] = [];
-  status: Status = "idle";
-  error: string | null = null;
 }
 
 export interface IImportSource {

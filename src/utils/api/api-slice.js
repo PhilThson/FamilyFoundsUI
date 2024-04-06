@@ -1,15 +1,13 @@
 import {
   createApi,
-  fetchBaseQuery,
+  fetchBaseQuery
 } from "@reduxjs/toolkit/query/react";
 import { authSliceActions } from "../../store/auth-slice";
 import {
-  BASE_HTTPS_API_URL,
   REFRESH_TOKEN_URL,
 } from "../../settings/constants";
 
 const baseQuery = fetchBaseQuery({
-  //baseUrl: BASE_HTTPS_API_URL,
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const token = getState().auth.accessToken;
@@ -24,7 +22,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
   const dispatch = api.dispatch;
   let result = await baseQuery(args, api, extraOptions);
   if (result?.error?.status === 401) {
-    const refreshResult = await baseQuery(REFRESH_TOKEN_URL, api, extraOptions);
+    const refreshResult = await baseQuery({ url: REFRESH_TOKEN_URL, method: "POST" }, api, extraOptions);
     if (refreshResult?.data) {
       const authResponse = refreshResult.data;
       dispatch(authSliceActions.updateLoginState(authResponse));
@@ -36,15 +34,12 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
   return result;
 };
 
-// Define our single API slice object
+// Define single API slice object
 export const apiSlice = createApi({
-  // The cache reducer expects to be added at `state.api` (already default - this is optional)
-  // Tutaj chciałbym dodawać do poszczególnych slice'ow stora np.:
-  // state.auth, state.categories, ...
-  // a nie ogólnie do state.api
+  // The cache reducer expects to be added at `state.api`
   reducerPath: 'api',
-  // All of our requests will have URLs starting with '/fakeApi'
-  // baseUrl: ...
+  // All of our requests will have URLs starting with '/api'
+  // baseUrl: '/api'
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({}),
 });

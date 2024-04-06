@@ -8,11 +8,7 @@ import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
 
 const LoginButton: React.FC = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const {
-    isLoggedIn,
-    name: userName,
-    loginState,
-  } = useAppSelector((state) => state.auth);
+  const { isLoggedIn, name: userName } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
   const handleCloseLoginForm = () => {
@@ -57,9 +53,7 @@ const LoginButton: React.FC = () => {
       <div className={styles["sticky-header"]}>
         <div className={styles["login-container"]}>{panelContent}</div>
       </div>
-      {isFormVisible && (
-        <LoginForm onClose={handleCloseLoginForm} loginState={loginState} />
-      )}
+      {isFormVisible && <LoginForm onClose={handleCloseLoginForm} />}
     </>
   );
 };

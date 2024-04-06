@@ -1,16 +1,9 @@
-import { useAppSelector } from "../../hooks/hooks";
 import { ImportSourceComboBoxProps } from "../../models/Main";
 import Spinner from "../UI/Spinner";
 import { useGetImportSourcesQuery } from "../../store/importSource-slice";
 
 const ImportSourceComboBox: React.FC<ImportSourceComboBoxProps> = (props) => {
   const { value, onSelectChange } = props;
-  // const importSources = useAppSelector(
-  //   (state) => state.importSources.importSources
-  // );
-  // const importSourcesState = useAppSelector(
-  //   (state) => state.importSources.fetchAllState
-  // );
   const {
     data: importSources,
     isLoading,
@@ -48,6 +41,10 @@ const ImportSourceComboBox: React.FC<ImportSourceComboBoxProps> = (props) => {
       </div>
     );
   } else if (isError) {
+    console.error(
+      "Wystąpił błąd podczas pobierania listy źródeł importu.",
+      error
+    );
     importSourcesComboBox = (
       <div>
         <p className="error-text">{error?.toString()}</p>

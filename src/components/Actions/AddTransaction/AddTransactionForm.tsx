@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Modal from "../../UI/Modal";
 import UserInput from "../../UserInputArea/UserInput";
 import styles from "./AddTransactionForm.module.css";
 import { CreateTransactionDto } from "../../../models/Create";
 import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
 import { addNewTransaction } from "../../../store/transaction-actions";
-import { fetchAllCategories } from "../../../store/category-actions";
 import {
   stringHasValue,
   amountHasValue,
@@ -44,10 +43,6 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
   const [contractorIsValid, setContractorIsValid] = useState(true);
   const [dateIsValid, setDateIsValid] = useState(true);
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(fetchAllCategories());
-  }, [dispatch]);
 
   const handleChange = (event: React.ChangeEvent) => {
     const { id, value } = event.target as HTMLInputElement;
