@@ -3,8 +3,8 @@ import styles from "./CategoryProperty.module.css";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import { ICategory, ICategoryPropertyProps } from "../../../models/Main";
-import { useGetCategoriesQuery } from "../../../store/category-slice";
 import Spinner from "../../UI/Spinner";
+import { useGetCategoriesQuery } from "../../../utils/api/api-slice";
 
 const CategoryProperty: React.FC<ICategoryPropertyProps> = ({
   name,
@@ -18,7 +18,6 @@ const CategoryProperty: React.FC<ICategoryPropertyProps> = ({
     data: categories,
     isLoading,
     isSuccess,
-    isError,
     error,
   } = useGetCategoriesQuery();
 

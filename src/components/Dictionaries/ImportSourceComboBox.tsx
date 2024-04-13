@@ -1,6 +1,6 @@
 import { ImportSourceComboBoxProps } from "../../models/Main";
+import { useGetImportSourcesQuery } from "../../utils/api/api-slice";
 import Spinner from "../UI/Spinner";
-import { useGetImportSourcesQuery } from "../../store/importSource-slice";
 
 const ImportSourceComboBox: React.FC<ImportSourceComboBoxProps> = (props) => {
   const { value, onSelectChange } = props;

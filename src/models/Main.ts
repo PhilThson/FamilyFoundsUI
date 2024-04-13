@@ -1,4 +1,6 @@
-import { BaseQueryApi, FetchArgs } from "@reduxjs/toolkit/dist/query";
+import { ThunkDispatch } from "@reduxjs/toolkit";
+//import { BaseQueryApi, FetchArgs } from "@reduxjs/toolkit/dist/query";
+import { MaybePromise } from "@reduxjs/toolkit/dist/query/tsHelpers";
 
 export interface IApiError {
   Message?: string;
@@ -43,18 +45,42 @@ export interface IMyRequestInit {
   referrerPolicy?: string | undefined;
 }
 
-export interface IBaseQueryArgs {
-  args: string | FetchArgs;
-  api: BaseQueryApi;
-  extraOptions: {};
-}
-
 export interface ApiClientResponse {
   status: number;
   data: any;
   headers: Headers;
   url: string;
 }
+
+export type BaseQueryFn<
+  Args = any,
+  Result = unknown,
+  Error = unknown,
+  DefinitionExtraOptions = {},
+  Meta = {}
+> = (
+  args: Args,
+  api: BaseQueryApi,
+  extraOptions: DefinitionExtraOptions
+) => MaybePromise<QueryReturnValue<Result, Error, Meta>>;
+
+export interface BaseQueryApi {
+  signal: AbortSignal;
+  dispatch: ThunkDispatch<any, any, any>;
+  getState: () => unknown;
+}
+
+export type QueryReturnValue<T = unknown, E = unknown, M = unknown> =
+  | {
+      error: E;
+      data?: undefined;
+      meta?: M;
+    }
+  | {
+      error?: undefined;
+      data: T;
+      meta?: M;
+    };
 
 export interface ITransaction {
   id: number;
@@ -124,6 +150,24 @@ export const currencies = ["PLN", "USD", "EUR"] as const;
 export type Currency = (typeof currencies)[number];
 
 export class Notification {
+  constructor(status: Status, message?: string) {
+    this.status = status;
+    this.message = message;
+    switch (status) {
+      case "idle":
+        this.title = "Brak";
+        break;
+      case "error":
+        this.title = "Błąd";
+        break;
+      case "pending":
+        this.title = "Ładowanie";
+        break;
+      case "success":
+        this.title = "Sukces";
+        break;
+    }
+  }
   status: Status = "idle";
   title: NotificationTitle = "Brak";
   message?: string;

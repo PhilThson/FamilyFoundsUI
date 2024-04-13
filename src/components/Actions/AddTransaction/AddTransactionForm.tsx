@@ -3,8 +3,9 @@ import Modal from "../../UI/Modal";
 import UserInput from "../../UserInputArea/UserInput";
 import styles from "./AddTransactionForm.module.css";
 import { CreateTransactionDto } from "../../../models/Create";
-import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
-import { addNewTransaction } from "../../../store/transaction-actions";
+import { useAppDispatch } from "../../../hooks/hooks";
+import { useAddTransactionMutation } from "../../../store/transaction-slice";
+import { uiSliceActions } from "../../../store/ui-slice";
 import {
   stringHasValue,
   amountHasValue,
@@ -13,6 +14,7 @@ import {
 } from "../../../utils/validators";
 import CategoriesComboBox from "../../Dictionaries/CategoriesComboBox";
 import CurrencyComboBox from "../../Dictionaries/CurrencyComboBox";
+import { Notification } from "../../../models/Main";
 
 const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
   onModalClose,
@@ -30,12 +32,9 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
     contractorBankName: "",
     categoryId: "",
   });
-  const transactionError = useAppSelector(
-    (state) => state.transactions.addNewState.error
-  );
-  const transactionStatus = useAppSelector(
-    (state) => state.transactions.addNewState.status
-  );
+
+  const [addTransaction, { error, isLoading, isError }] =
+    useAddTransactionMutation();
 
   const [isTouched, setIsTouched] = useState(false);
   const [titleIsValid, setTitleIsValid] = useState(true);
@@ -43,6 +42,8 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
   const [contractorIsValid, setContractorIsValid] = useState(true);
   const [dateIsValid, setDateIsValid] = useState(true);
   const dispatch = useAppDispatch();
+
+  const showNotification = uiSliceActions.showNotification;
 
   const handleChange = (event: React.ChangeEvent) => {
     const { id, value } = event.target as HTMLInputElement;
@@ -88,7 +89,7 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
     transactionIsValid = true;
   }
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!transactionIsValid || !newTransactionIsValid(transaction)) {
       validateTransaction("title", transaction.title);
@@ -97,7 +98,17 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
       validateTransaction("date", transaction.date);
       return;
     }
-    dispatch(addNewTransaction(transaction));
+    try {
+      await addTransaction(transaction);
+      dispatch(
+        showNotification(new Notification("success", "Dodano transakcję"))
+      );
+    } catch (err) {
+      console.error("Błąd dodawania transakcji", err);
+      dispatch(
+        showNotification(new Notification("error", "Błąd dodawania transakcji"))
+      );
+    }
   };
 
   return (
@@ -215,14 +226,11 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
           </div>
           <div className={styles["input-group"]}></div>
         </div>
-        {transactionStatus === "error" && (
-          <p className={styles["error-text"]}>{transactionError}</p>
+        {isError && (
+          <p className={styles["error-text"]}>{JSON.stringify(error)}</p>
         )}
         <div className={styles["form-actions"]}>
-          <button
-            type="submit"
-            disabled={!transactionIsValid || transactionStatus === "pending"}
-          >
+          <button type="submit" disabled={!transactionIsValid || isLoading}>
             Dodaj
           </button>
         </div>

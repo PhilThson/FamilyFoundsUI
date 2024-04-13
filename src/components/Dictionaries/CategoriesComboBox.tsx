@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Spinner from "../UI/Spinner";
 import styles from "./CategoriesComboBox.module.css";
 import { ComboBoxProps } from "../../models/Main";
-import { useGetCategoriesQuery } from "../../store/category-slice";
+import { useGetCategoriesQuery } from "../../utils/api/api-slice";
 
 const CategoriesComboBox: React.FC<ComboBoxProps> = ({
   id,
@@ -17,7 +17,6 @@ const CategoriesComboBox: React.FC<ComboBoxProps> = ({
     data: categories,
     isLoading,
     isSuccess,
-    isError,
     error,
   } = useGetCategoriesQuery();
 

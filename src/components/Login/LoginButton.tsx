@@ -1,7 +1,7 @@
 import { useState } from "react";
 import LoginForm from "./LoginForm";
 import styles from "./LoginButton.module.css";
-import { authSliceActions } from "../../store/auth-slice";
+import { authSliceActions } from "../../store/auth-actions";
 import { uiSliceActions } from "../../store/ui-slice";
 import { Notification } from "../../models/Main";
 import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
@@ -22,12 +22,11 @@ const LoginButton: React.FC = () => {
 
   const handleLogout = () => {
     dispatch(authSliceActions.logout());
-    const notification: Notification = {
-      status: "success",
-      title: "Sukces",
-      message: "Pomyślnie wylogowano użytkownika.",
-    };
-    dispatch(uiSliceActions.showNotification(notification));
+    dispatch(
+      uiSliceActions.showNotification(
+        new Notification("success", "Pomyślnie wylogowano użytkownika.")
+      )
+    );
   };
 
   let panelContent;

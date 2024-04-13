@@ -1,25 +1,27 @@
 import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
+import { useAppSelector, useAppDispatch } from "../../../hooks/hooks";
+import { uiSliceActions } from "../../../store/ui-slice";
 import Transactions from "./Transactions";
 import TransactionDetails from "../TransactionDetails/TransactionDetails";
 import Spinner from "../../UI/Spinner";
-import { ITransaction, TransactionsAreaProps } from "../../../models/Main";
-import { deleteTransaction } from "../../../store/transaction-actions";
+import { ITransaction, Notification } from "../../../models/Main";
+import { useDeleteTransactionMutation } from "../../../store/transaction-slice";
 import AlertDialog from "../../UI/AlertDialog";
 import styles from "./TransactionsArea.module.css";
 
-const TransactionsArea: React.FC<TransactionsAreaProps> = ({
-  transactionsState,
-  transactionsCount,
-}) => {
+const TransactionsArea: React.FC = () => {
   const { status: transactionsStatus, error: transactionsError } =
-    transactionsState;
+    useAppSelector((state) => state.transactions.fetchAllState);
+  const transactionsCount = useAppSelector(
+    (state) => state.transactions.summaryData.transactionsCount
+  );
+  const dispatch = useAppDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] =
     useState<ITransaction | null>(null);
 
-  const dispatch = useAppDispatch();
+  const [deleteTransaction, { error }] = useDeleteTransactionMutation();
 
   const handleEditTransaction = (transaction: ITransaction) => {
     setSelectedTransaction(transaction);
@@ -31,9 +33,21 @@ const TransactionsArea: React.FC<TransactionsAreaProps> = ({
     setIsAlertOpen(true);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (selectedTransaction) {
-      dispatch(deleteTransaction(selectedTransaction.id));
+      try {
+        await deleteTransaction(selectedTransaction.id).unwrap();
+      } catch (err) {
+        console.error("Wystąpił błąd podczas usuwania transakcji", err);
+        dispatch(
+          uiSliceActions.showNotification(
+            new Notification(
+              "error",
+              `Błąd usuwania transakcji. ${JSON.stringify(error)}}`
+            )
+          )
+        );
+      }
     } else {
       console.warn("Brak wybranej transakcji do usunięcia");
     }

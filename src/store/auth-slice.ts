@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit/react";
 import { jwtDecode } from "jwt-decode";
 import {
   IAuthState,
@@ -27,6 +27,14 @@ const auth = createSlice({
       setAuthState(state, action.payload);
     },
   },
+  extraReducers: (builder) => {
+    builder.addMatcher(
+      authApiSlice.endpoints.login.matchFulfilled,
+      (state, action) => {
+        setAuthState(state, action.payload);
+      }
+    );
+  },
 });
 
 const setAuthState = (
@@ -39,10 +47,9 @@ const setAuthState = (
   state.name = sub || "";
 };
 
-export const authSliceActions = auth.actions;
 export default auth.reducer;
 
-export const authApiSlice = apiSlice.injectEndpoints({
+const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<IAuthenticateResponse, IAuthenticateRequest>({
       query: (credentials) => ({

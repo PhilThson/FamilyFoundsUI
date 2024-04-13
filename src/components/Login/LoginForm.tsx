@@ -5,7 +5,6 @@ import { ChangeEvent, useState } from "react";
 import { useAppDispatch } from "../../hooks/hooks";
 import sha256 from "crypto-js/sha256";
 import { useLoginMutation } from "../../store/auth-slice";
-import { authSliceActions } from "../../store/auth-slice";
 
 import styles from "./LoginForm.module.css";
 import Spinner from "../UI/Spinner";
@@ -83,8 +82,7 @@ const LoginForm: React.FC<{
       password: sha256(loginData.password + "/T}qRj&)T-89i}").toString(),
     };
     try {
-      const response = await logIn(authRequest).unwrap();
-      dispatch(authSliceActions.updateLoginState(response));
+      await logIn(authRequest).unwrap();
       dispatch(
         uiSliceActions.showNotification({
           status: "success",

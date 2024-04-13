@@ -2,12 +2,13 @@ import { useState } from "react";
 import Modal from "../../UI/Modal";
 import styles from "./TransactionDetails.module.css";
 import Property from "./Property";
-import { ITransaction } from "../../../models/Main";
+import { ITransaction, Notification } from "../../../models/Main";
 import CategoryProperty from "./CategoryProperty";
 import { UpdateTransactionDto } from "../../../models/Update";
-import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
-import { updateTransaction } from "../../../store/transaction-actions";
+import { useAppDispatch } from "../../../hooks/hooks";
+import { uiSliceActions } from "../../../store/ui-slice";
 import CurrencyProperty from "./CurrencyProperty";
+import { useUpdateTransactionMutation } from "../../../store/transaction-slice";
 
 interface ITransactionDetailsProps {
   transaction: ITransaction;
@@ -19,12 +20,9 @@ const TransactionDetails: React.FC<ITransactionDetailsProps> = ({
   onClose,
 }) => {
   const dispatch = useAppDispatch();
-  const updateTransactionStatus = useAppSelector(
-    (state) => state.transactions.updateState.status
-  );
-  const updateTransactionError = useAppSelector(
-    (state) => state.transactions.updateState.error
-  );
+  const [updateTransaction, { isLoading, isError, error }] =
+    useUpdateTransactionMutation();
+
   const [updatedTransaction, setUpdatedTransaction] =
     useState<UpdateTransactionDto>({
       id: transaction.id,
@@ -48,8 +46,22 @@ const TransactionDetails: React.FC<ITransactionDetailsProps> = ({
     }));
   };
 
-  const handleSaveTransaction = () => {
-    dispatch(updateTransaction(updatedTransaction));
+  const handleSaveTransaction = async () => {
+    try {
+      await updateTransaction(updatedTransaction).unwrap();
+      dispatch(
+        uiSliceActions.showNotification(
+          new Notification("success", "Zaktualizowano transakcję")
+        )
+      );
+    } catch (err) {
+      console.error(err);
+      dispatch(
+        uiSliceActions.showNotification(
+          new Notification("error", "Wystąpił błąd podczas aktualizacji")
+        )
+      );
+    }
   };
 
   return (
@@ -132,14 +144,14 @@ const TransactionDetails: React.FC<ITransactionDetailsProps> = ({
           />
         )}
       </ul>
-      {updateTransactionStatus === "error" && (
-        <p className={styles["error-text"]}>{updateTransactionError}</p>
+      {isError && (
+        <p className={styles["error-text"]}>{JSON.stringify(error)}</p>
       )}
       <div className={styles.actions}>
         <button
           className={styles["button-save"]}
           onClick={handleSaveTransaction}
-          disabled={updateTransactionStatus === "pending"}
+          disabled={isLoading}
         >
           Zapisz
         </button>
