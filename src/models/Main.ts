@@ -1,7 +1,3 @@
-import { ThunkDispatch } from "@reduxjs/toolkit";
-//import { BaseQueryApi, FetchArgs } from "@reduxjs/toolkit/dist/query";
-import { MaybePromise } from "@reduxjs/toolkit/dist/query/tsHelpers";
-
 export interface IApiError {
   Message?: string;
 }
@@ -15,59 +11,11 @@ export class FetchError {
   statusCode?: number;
 }
 
-export class FetchClientData {
-  body?: {} | string | null = null;
-  isForm?: boolean = false;
-  customConfig?: ICustomConfig;
-  auth?: IAuthState;
-  method?: string;
-}
-
-export interface ICustomConfig {
-  mode?: string;
-  cache?: string;
-  credentials?: string;
-  headers?: Record<string, string>;
-  redirect?: string;
-  referrerPolicy?: string;
-}
-
-export interface IMyRequestInit {
-  headers: {
-    [x: string]: string;
-  };
-  credentials: string;
-  method?: string;
-  body?: {} | null;
-  mode?: string | undefined;
-  cache?: string | undefined;
-  redirect?: string | undefined;
-  referrerPolicy?: string | undefined;
-}
-
 export interface ApiClientResponse {
   status: number;
   data: any;
   headers: Headers;
   url: string;
-}
-
-export type BaseQueryFn<
-  Args = any,
-  Result = unknown,
-  Error = unknown,
-  DefinitionExtraOptions = {},
-  Meta = {}
-> = (
-  args: Args,
-  api: BaseQueryApi,
-  extraOptions: DefinitionExtraOptions
-) => MaybePromise<QueryReturnValue<Result, Error, Meta>>;
-
-export interface BaseQueryApi {
-  signal: AbortSignal;
-  dispatch: ThunkDispatch<any, any, any>;
-  getState: () => unknown;
 }
 
 export type QueryReturnValue<T = unknown, E = unknown, M = unknown> =
@@ -101,10 +49,6 @@ export interface ITransactionState {
   transactions: ITransaction[];
   isVisible: boolean;
   fetchAllState: IActionState;
-  addNewState: IActionState;
-  updateState: IActionState;
-  deleteState: IActionState;
-  importState: IActionState;
   summaryData: ISummaryData;
 }
 
@@ -149,32 +93,14 @@ export type NotificationTitle = "Brak" | "Błąd" | "Ładowanie" | "Sukces";
 export const currencies = ["PLN", "USD", "EUR"] as const;
 export type Currency = (typeof currencies)[number];
 
-export class Notification {
-  constructor(status: Status, message?: string) {
-    this.status = status;
-    this.message = message;
-    switch (status) {
-      case "idle":
-        this.title = "Brak";
-        break;
-      case "error":
-        this.title = "Błąd";
-        break;
-      case "pending":
-        this.title = "Ładowanie";
-        break;
-      case "success":
-        this.title = "Sukces";
-        break;
-    }
-  }
-  status: Status = "idle";
-  title: NotificationTitle = "Brak";
+export interface INotification {
+  status: Status;
+  title?: NotificationTitle;
   message?: string;
 }
 
 export class NotificationState {
-  notification?: Notification;
+  notification?: INotification;
 }
 
 export class DateRange {

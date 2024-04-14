@@ -14,24 +14,26 @@ import {
 } from "../../../utils/validators";
 import CategoriesComboBox from "../../Dictionaries/CategoriesComboBox";
 import CurrencyComboBox from "../../Dictionaries/CurrencyComboBox";
-import { Notification } from "../../../models/Main";
+
+const initTransactionState: CreateTransactionDto = {
+  title: "",
+  amount: "",
+  currency: "PLN",
+  account: "",
+  contractor: "",
+  date: new Date().toJSON().slice(0, 10),
+  description: "",
+  postingDate: "",
+  contractorAccountNumber: "",
+  contractorBankName: "",
+  categoryId: "",
+};
 
 const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
   onModalClose,
 }) => {
-  const [transaction, setTransaction] = useState<CreateTransactionDto>({
-    title: "",
-    amount: "",
-    currency: "PLN",
-    account: "",
-    contractor: "",
-    date: new Date().toJSON().slice(0, 10),
-    description: "",
-    postingDate: "",
-    contractorAccountNumber: "",
-    contractorBankName: "",
-    categoryId: "",
-  });
+  const [transaction, setTransaction] =
+    useState<CreateTransactionDto>(initTransactionState);
 
   const [addTransaction, { error, isLoading, isError }] =
     useAddTransactionMutation();
@@ -101,12 +103,21 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
     try {
       await addTransaction(transaction);
       dispatch(
-        showNotification(new Notification("success", "Dodano transakcję"))
+        showNotification({
+          status: "success",
+          title: "Sukces",
+          message: "Dodano transakcję",
+        })
       );
+      setTransaction(initTransactionState);
     } catch (err) {
       console.error("Błąd dodawania transakcji", err);
       dispatch(
-        showNotification(new Notification("error", "Błąd dodawania transakcji"))
+        showNotification({
+          status: "error",
+          title: "Błąd",
+          message: "Błąd dodawania transakcji",
+        })
       );
     }
   };

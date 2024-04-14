@@ -4,7 +4,7 @@ import { uiSliceActions } from "../../../store/ui-slice";
 import Transactions from "./Transactions";
 import TransactionDetails from "../TransactionDetails/TransactionDetails";
 import Spinner from "../../UI/Spinner";
-import { ITransaction, Notification } from "../../../models/Main";
+import { ITransaction } from "../../../models/Main";
 import { useDeleteTransactionMutation } from "../../../store/transaction-slice";
 import AlertDialog from "../../UI/AlertDialog";
 import styles from "./TransactionsArea.module.css";
@@ -40,12 +40,10 @@ const TransactionsArea: React.FC = () => {
       } catch (err) {
         console.error("Wystąpił błąd podczas usuwania transakcji", err);
         dispatch(
-          uiSliceActions.showNotification(
-            new Notification(
-              "error",
-              `Błąd usuwania transakcji. ${JSON.stringify(error)}}`
-            )
-          )
+          uiSliceActions.showNotification({
+            status: "error",
+            message: `Błąd usuwania transakcji. ${JSON.stringify(error)}`,
+          })
         );
       }
     } else {

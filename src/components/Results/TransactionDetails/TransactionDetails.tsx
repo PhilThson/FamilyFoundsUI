@@ -2,7 +2,7 @@ import { useState } from "react";
 import Modal from "../../UI/Modal";
 import styles from "./TransactionDetails.module.css";
 import Property from "./Property";
-import { ITransaction, Notification } from "../../../models/Main";
+import { ITransaction } from "../../../models/Main";
 import CategoryProperty from "./CategoryProperty";
 import { UpdateTransactionDto } from "../../../models/Update";
 import { useAppDispatch } from "../../../hooks/hooks";
@@ -50,16 +50,18 @@ const TransactionDetails: React.FC<ITransactionDetailsProps> = ({
     try {
       await updateTransaction(updatedTransaction).unwrap();
       dispatch(
-        uiSliceActions.showNotification(
-          new Notification("success", "Zaktualizowano transakcję")
-        )
+        uiSliceActions.showNotification({
+          status: "success",
+          message: "Zaktualizowano transakcję",
+        })
       );
     } catch (err) {
       console.error(err);
       dispatch(
-        uiSliceActions.showNotification(
-          new Notification("error", "Wystąpił błąd podczas aktualizacji")
-        )
+        uiSliceActions.showNotification({
+          status: "error",
+          message: "Wystąpił błąd podczas aktualizacji",
+        })
       );
     }
   };

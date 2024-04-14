@@ -21,10 +21,6 @@ const initState: ITransactionState = {
   transactions: [],
   isVisible: false,
   fetchAllState: initActionState,
-  addNewState: initActionState,
-  updateState: initActionState,
-  deleteState: initActionState,
-  importState: initActionState,
   summaryData: {
     totalDebit: 0.0,
     totalCredit: 0.0,
@@ -55,7 +51,6 @@ const transactionSlice = createSlice({
       .addMatcher(
         transactionsApiSlice.endpoints.getTransactions.matchFulfilled,
         (state, action) => {
-          console.log("Match fullfilled fetchAll");
           state.transactions = action.payload;
           state.summaryData = computeSummary(state.transactions);
           state.fetchAllState.status = "success";
@@ -64,14 +59,12 @@ const transactionSlice = createSlice({
       .addMatcher(
         transactionsApiSlice.endpoints.getTransactions.matchPending,
         (state) => {
-          console.log("Match pending fetchAll");
           state.fetchAllState.status = "pending";
         }
       )
       .addMatcher(
         transactionsApiSlice.endpoints.getTransactions.matchRejected,
         (state, { payload }) => {
-          console.log("Match error fetchAll. Payload:", payload);
           state.fetchAllState.status = "error";
           state.fetchAllState.error = JSON.stringify(payload);
         }
@@ -79,14 +72,12 @@ const transactionSlice = createSlice({
       .addMatcher(
         transactionsApiSlice.endpoints.addTransaction.matchFulfilled,
         (state, action) => {
-          state.addNewState.status = "success";
           state.transactions.push(action.payload);
         }
       )
       .addMatcher(
         transactionsApiSlice.endpoints.updateTransaction.matchFulfilled,
         (state, action) => {
-          state.updateState.status = "success";
           let newTransactionsList = state.transactions.filter(
             (t) => t.id !== action.payload.id
           );
@@ -98,7 +89,6 @@ const transactionSlice = createSlice({
       .addMatcher(
         transactionsApiSlice.endpoints.deleteTransaction.matchFulfilled,
         (state, action) => {
-          state.deleteState.status = "success";
           state.transactions = state.transactions.filter(
             (t) => t.id !== action.payload
           );

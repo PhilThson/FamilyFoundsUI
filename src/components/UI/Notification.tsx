@@ -3,8 +3,9 @@ import { createPortal } from "react-dom";
 import { useAppDispatch } from "../../hooks/hooks";
 import { uiSliceActions } from "../../store/ui-slice";
 import { useEffect } from "react";
+import { INotification } from "../../models/Main";
 
-const Notification = ({ notification }) => {
+const Notification: React.FC<INotification> = (notification) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -21,13 +22,31 @@ const Notification = ({ notification }) => {
     dispatch(uiSliceActions.clearNotification());
   };
 
+  if (notification.title === undefined) {
+    switch (notification.status) {
+      case "idle":
+        notification.title = "Brak";
+        break;
+      case "error":
+        notification.title = "Błąd";
+        break;
+      case "pending":
+        notification.title = "Ładowanie";
+        break;
+      case "success":
+        notification.title = "Sukces";
+        break;
+    }
+  }
+
   let specialClasses = "";
 
   if (notification.status === "error") {
     specialClasses = classes.error;
-  }
-  if (notification.status === "success") {
+  } else if (notification.status === "success") {
     specialClasses = classes.success;
+  } else {
+    specialClasses = classes.info;
   }
 
   const cssClasses = `${classes.notification} ${specialClasses}`;
@@ -43,7 +62,7 @@ const Notification = ({ notification }) => {
     <>
       {createPortal(
         notifactionContent,
-        document.getElementById("notification-root")
+        document.getElementById("notification-root") as Element
       )}
     </>
   );

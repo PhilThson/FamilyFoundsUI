@@ -53,16 +53,16 @@ const baseFetchWithReauth: BaseQueryFn = async (
   extraOptions,
   isFormData: boolean = false
 ) => {
+  console.log("baseFetchWithReauth, isFormData:", isFormData);
   if (isFormData) {
+    console.log("IsFormData = true");
     const headers = args.headers as Headers;
     headers.set("Content-Type", "multipart/form-data");
-    //args.serializeBody = (body: any) => body;
     args.isJsonContentType = () => false;
   }
   return baseQueryWithReauth(args, api, extraOptions);
 };
 
-// Define single API slice object
 export const apiSlice = createApi({
   // The cache reducer expects to be added at `state.api`
   reducerPath: "api",

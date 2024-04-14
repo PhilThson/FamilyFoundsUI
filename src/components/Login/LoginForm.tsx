@@ -9,6 +9,10 @@ import { useLoginMutation } from "../../store/auth-slice";
 import styles from "./LoginForm.module.css";
 import Spinner from "../UI/Spinner";
 import { uiSliceActions } from "../../store/ui-slice";
+import {
+  isErrorWithMessage,
+  isFetchBaseQueryError,
+} from "../../utils/api/error-helper";
 
 const initLoginData = {
   email: "",
@@ -66,7 +70,15 @@ const LoginForm: React.FC<{
   if (isLoading) {
     statusContent = <Spinner text="Logowanie..." />;
   } else if (isError) {
-    statusContent = <p className="error-text">{error?.toString()}</p>;
+    let errMsg;
+    if (isFetchBaseQueryError(error)) {
+      errMsg = "error" in error ? error.error : JSON.stringify(error.data);
+    } else if (isErrorWithMessage(error)) {
+      errMsg = error.message;
+    }
+    statusContent = (
+      <p className="error-text">{`Wystąpił błąd podczas logowania. (${errMsg})`}</p>
+    );
   }
 
   const handleLogin = async (event: React.FormEvent) => {

@@ -3,7 +3,6 @@ import LoginForm from "./LoginForm";
 import styles from "./LoginButton.module.css";
 import { authSliceActions } from "../../store/auth-actions";
 import { uiSliceActions } from "../../store/ui-slice";
-import { Notification } from "../../models/Main";
 import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
 
 const LoginButton: React.FC = () => {
@@ -23,9 +22,10 @@ const LoginButton: React.FC = () => {
   const handleLogout = () => {
     dispatch(authSliceActions.logout());
     dispatch(
-      uiSliceActions.showNotification(
-        new Notification("success", "Pomyślnie wylogowano użytkownika.")
-      )
+      uiSliceActions.showNotification({
+        status: "success",
+        message: "Pomyślnie wylogowano użytkownika.",
+      })
     );
   };
 

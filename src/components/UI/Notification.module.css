@@ -44,3 +44,8 @@
 .success {
   background-color: #2c7d4b;
 }
+
+.info {
+  color: #41464b;
+  background-color: #e2e3e5;
+}

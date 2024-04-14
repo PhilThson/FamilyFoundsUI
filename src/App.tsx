@@ -14,7 +14,7 @@ function App() {
     <div className="layout">
       <LoginButton />
       <Header title="Fundusze rodzinne" />
-      {notification && <Notification notification={notification} />}
+      {notification && <Notification {...notification} />}
       <main>
         <Actions />
         <UserInputArea />
