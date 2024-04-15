@@ -1,3 +1,4 @@
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query/react";
 import { ImportSourceComboBoxProps } from "../../models/Main";
 import { useGetImportSourcesQuery } from "../../utils/api/api-slice";
 import Spinner from "../UI/Spinner";
@@ -47,7 +48,7 @@ const ImportSourceComboBox: React.FC<ImportSourceComboBoxProps> = (props) => {
     );
     importSourcesComboBox = (
       <div>
-        <p className="error-text">{error?.toString()}</p>
+        <p className="error-text">{(error as { error: string }).error}</p>
       </div>
     );
   } else {

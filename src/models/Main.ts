@@ -1,5 +1,5 @@
 export interface IApiError {
-  Message?: string;
+  message?: string;
 }
 
 export class FetchError {
