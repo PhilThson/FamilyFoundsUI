@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import styles from "./CategoryProperty.module.css";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
-import { ICategory, ICategoryPropertyProps } from "../../../models/Main";
+import {
+  ICategory,
+  ICategoryPropertyProps,
+  IFetchError,
+} from "../../../models/Main";
 import Spinner from "../../UI/Spinner";
 import { useGetCategoriesQuery } from "../../../utils/api/api-slice";
 
@@ -57,7 +61,7 @@ const CategoryProperty: React.FC<ICategoryPropertyProps> = ({
       <div>
         <p className={styles["info-text"]}>
           Nie udało się pobrać listy kategorii.
-          {error?.toString()}
+          {(error as IFetchError).error}
         </p>
       </div>
     );

@@ -14,6 +14,7 @@ import {
 } from "../../../utils/validators";
 import CategoriesComboBox from "../../Dictionaries/CategoriesComboBox";
 import CurrencyComboBox from "../../Dictionaries/CurrencyComboBox";
+import { IFetchError } from "../../../models/Main";
 
 const initTransactionState: CreateTransactionDto = {
   title: "",
@@ -105,7 +106,6 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
       dispatch(
         showNotification({
           status: "success",
-          title: "Sukces",
           message: "Dodano transakcję",
         })
       );
@@ -115,7 +115,6 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
       dispatch(
         showNotification({
           status: "error",
-          title: "Błąd",
           message: "Błąd dodawania transakcji",
         })
       );
@@ -238,7 +237,7 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
           <div className={styles["input-group"]}></div>
         </div>
         {isError && (
-          <p className={styles["error-text"]}>{JSON.stringify(error)}</p>
+          <p className={styles["error-text"]}>{(error as IFetchError).error}</p>
         )}
         <div className={styles["form-actions"]}>
           <button type="submit" disabled={!transactionIsValid || isLoading}>

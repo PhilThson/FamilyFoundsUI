@@ -51,7 +51,6 @@ const ImportFromCsvForm: React.FC<{ onImportClose: () => void }> = ({
       dispatch(
         uiSliceActions.showNotification({
           status: "success",
-          title: "Sukces",
           message: `Zaimportowano ${data} transakcje!`,
         })
       );

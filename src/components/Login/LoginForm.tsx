@@ -1,6 +1,6 @@
 import Modal from "../UI/Modal";
 import UserInput from "../UserInputArea/UserInput";
-import { IAuthenticateRequest } from "../../models/Main";
+import { IAuthenticateRequest, IFetchError } from "../../models/Main";
 import { ChangeEvent, useState } from "react";
 import { useAppDispatch } from "../../hooks/hooks";
 import sha256 from "crypto-js/sha256";
@@ -9,10 +9,6 @@ import { useLoginMutation } from "../../store/auth-slice";
 import styles from "./LoginForm.module.css";
 import Spinner from "../UI/Spinner";
 import { uiSliceActions } from "../../store/ui-slice";
-import {
-  isErrorWithMessage,
-  isFetchBaseQueryError,
-} from "../../utils/api/error-helper";
 
 const initLoginData = {
   email: "",
@@ -70,14 +66,10 @@ const LoginForm: React.FC<{
   if (isLoading) {
     statusContent = <Spinner text="Logowanie..." />;
   } else if (isError) {
-    let errMsg;
-    if (isFetchBaseQueryError(error)) {
-      errMsg = "error" in error ? error.error : JSON.stringify(error.data);
-    } else if (isErrorWithMessage(error)) {
-      errMsg = error.message;
-    }
     statusContent = (
-      <p className="error-text">{`Wystąpił błąd podczas logowania. (${errMsg})`}</p>
+      <p className="error-text">{`Wystąpił błąd podczas logowania. (${
+        (error as IFetchError).error
+      })`}</p>
     );
   }
 
@@ -98,7 +90,6 @@ const LoginForm: React.FC<{
       dispatch(
         uiSliceActions.showNotification({
           status: "success",
-          title: "Sukces",
           message: "Zalogowano!",
         })
       );

@@ -2,13 +2,9 @@ export interface IApiError {
   message?: string;
 }
 
-export class FetchError {
-  constructor(message?: string, statusCode?: number) {
-    this.message = message;
-    this.statusCode = statusCode;
-  }
-  message?: string;
-  statusCode?: number;
+export interface IFetchError {
+  status: string;
+  error: string;
 }
 
 export interface ApiClientResponse {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Spinner from "../UI/Spinner";
 import styles from "./CategoriesComboBox.module.css";
-import { ComboBoxProps } from "../../models/Main";
+import { ComboBoxProps, IFetchError } from "../../models/Main";
 import { useGetCategoriesQuery } from "../../utils/api/api-slice";
 
 const CategoriesComboBox: React.FC<ComboBoxProps> = ({
@@ -54,10 +54,12 @@ const CategoriesComboBox: React.FC<ComboBoxProps> = ({
       </div>
     );
   } else {
-    console.error("Wystąpił błąd podczas pobierania listy kategorii.", error);
     categoriesComboBox = (
       <div>
-        <p className={styles["info-text"]}>{error?.toString()}</p>
+        <p className={styles["info-text"]}>
+          Nie udało się pobrać listy kategorii.
+          {(error as IFetchError).error}
+        </p>
       </div>
     );
   }

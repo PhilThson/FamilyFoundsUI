@@ -10,8 +10,9 @@ import AlertDialog from "../../UI/AlertDialog";
 import styles from "./TransactionsArea.module.css";
 
 const TransactionsArea: React.FC = () => {
-  const { status: transactionsStatus, error: transactionsError } =
-    useAppSelector((state) => state.transactions.fetchAllState);
+  const { status: fetchAllStatus, error: fetchAllError } = useAppSelector(
+    (state) => state.transactions.fetchAllState
+  );
   const transactionsCount = useAppSelector(
     (state) => state.transactions.summaryData.transactionsCount
   );
@@ -59,7 +60,7 @@ const TransactionsArea: React.FC = () => {
 
   let content;
 
-  switch (transactionsStatus) {
+  switch (fetchAllStatus) {
     case "pending":
       content = <Spinner text="Pobieranie transakcji..." />;
       break;
@@ -92,7 +93,7 @@ const TransactionsArea: React.FC = () => {
       }
       break;
     case "error":
-      content = <p>{transactionsError}</p>;
+      content = <p>{fetchAllError}</p>;
       break;
     default:
       break;

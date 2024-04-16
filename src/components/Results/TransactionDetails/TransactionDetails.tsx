@@ -2,7 +2,7 @@ import { useState } from "react";
 import Modal from "../../UI/Modal";
 import styles from "./TransactionDetails.module.css";
 import Property from "./Property";
-import { ITransaction } from "../../../models/Main";
+import { IFetchError, ITransaction } from "../../../models/Main";
 import CategoryProperty from "./CategoryProperty";
 import { UpdateTransactionDto } from "../../../models/Update";
 import { useAppDispatch } from "../../../hooks/hooks";
@@ -147,7 +147,7 @@ const TransactionDetails: React.FC<ITransactionDetailsProps> = ({
         )}
       </ul>
       {isError && (
-        <p className={styles["error-text"]}>{JSON.stringify(error)}</p>
+        <p className={styles["error-text"]}>{(error as IFetchError).error}</p>
       )}
       <div className={styles.actions}>
         <button

@@ -6,6 +6,7 @@ import {
   ISummaryData,
   ICategorySum,
   IDateRange,
+  IFetchError,
 } from "../models/Main";
 import { apiSlice } from "../utils/api/api-slice";
 import { TRANSACTIONS_URL } from "../settings/constants";
@@ -66,7 +67,7 @@ const transactionSlice = createSlice({
         transactionsApiSlice.endpoints.getTransactions.matchRejected,
         (state, { payload }) => {
           state.fetchAllState.status = "error";
-          state.fetchAllState.error = JSON.stringify(payload);
+          state.fetchAllState.error = (payload as IFetchError).error;
         }
       )
       .addMatcher(

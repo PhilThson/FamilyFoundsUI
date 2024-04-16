@@ -22,19 +22,20 @@ const Notification: React.FC<INotification> = (notification) => {
     dispatch(uiSliceActions.clearNotification());
   };
 
-  if (notification.title === undefined) {
+  let notificationTitle = notification.title;
+  if (notificationTitle === undefined) {
     switch (notification.status) {
       case "idle":
-        notification.title = "Brak";
+        notificationTitle = "Brak";
         break;
       case "error":
-        notification.title = "Błąd";
+        notificationTitle = "Błąd";
         break;
       case "pending":
-        notification.title = "Ładowanie";
+        notificationTitle = "Ładowanie";
         break;
       case "success":
-        notification.title = "Sukces";
+        notificationTitle = "Sukces";
         break;
     }
   }
@@ -53,7 +54,7 @@ const Notification: React.FC<INotification> = (notification) => {
 
   const notifactionContent = (
     <section className={cssClasses} onClick={handleNotificationClose}>
-      <h2>{notification.title}</h2>
+      <h2>{notificationTitle}</h2>
       <p>{notification.message}</p>
     </section>
   );
