@@ -16,6 +16,7 @@ import {
   ICategory,
   IImportSource,
 } from "../../models/Main";
+import { transactionActions } from "../../store/transaction-slice";
 import { authSliceActions } from "../../store/auth-actions";
 import { isErrorWithMessage, isFetchBaseQueryError } from "./error-helper";
 
@@ -43,6 +44,7 @@ const baseFetch: BaseQueryFn = async (args, api, extraOptions) => {
     );
     if (refreshResult?.error) {
       dispatch(authSliceActions.clearLoginState());
+      dispatch(transactionActions.clearTransactionsState());
     } else if (refreshResult.data) {
       const authResponse = refreshResult.data as IAuthenticateResponse;
       if (authResponse) {

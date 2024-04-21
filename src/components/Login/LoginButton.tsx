@@ -4,15 +4,14 @@ import styles from "./LoginButton.module.css";
 import { authSliceActions } from "../../store/auth-actions";
 import { uiSliceActions } from "../../store/ui-slice";
 import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
+import { transactionActions } from "../../store/transaction-slice";
 
 const LoginButton: React.FC = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const { isLoggedIn, name: userName } = useAppSelector((state) => state.auth);
+  const authState = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
-
   const handleCloseLoginForm = () => {
     setIsFormVisible(false);
-    dispatch(authSliceActions.clearLoginState());
   };
 
   const handleShowLoginForm = () => {
@@ -20,7 +19,8 @@ const LoginButton: React.FC = () => {
   };
 
   const handleLogout = () => {
-    dispatch(authSliceActions.logout());
+    dispatch(authSliceActions.clearLoginState());
+    dispatch(transactionActions.clearTransactionsState());
     dispatch(
       uiSliceActions.showNotification({
         status: "success",
@@ -30,10 +30,10 @@ const LoginButton: React.FC = () => {
   };
 
   let panelContent;
-  if (isLoggedIn) {
+  if (authState.isLoggedIn) {
     panelContent = (
       <div className={styles["logged-in"]}>
-        <span>Witaj {userName}!</span>
+        <span>Witaj {authState.name}!</span>
         <button onClick={handleLogout} className={styles["link-button"]}>
           Wyloguj
         </button>

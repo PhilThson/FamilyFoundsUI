@@ -19,10 +19,7 @@ const auth = createSlice({
   name: "auth",
   initialState: initState,
   reducers: {
-    logout: () => initState,
-    clearLoginState(state) {
-      state = initState;
-    },
+    clearLoginState: () => initState,
     updateLoginState(state, action: PayloadAction<IAuthenticateResponse>) {
       setAuthState(state, action.payload);
     },

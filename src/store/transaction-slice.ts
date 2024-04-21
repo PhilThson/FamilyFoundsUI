@@ -46,6 +46,7 @@ const transactionSlice = createSlice({
     toggle(state) {
       state.isVisible = !state.isVisible;
     },
+    clearTransactionsState: () => initState,
   },
   extraReducers(builder) {
     builder
