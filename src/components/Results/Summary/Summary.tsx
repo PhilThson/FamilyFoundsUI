@@ -1,16 +1,19 @@
 import React from "react";
 import { useAppSelector } from "../../../hooks/hooks";
 import styles from "./Summary.module.css";
-import { Status } from "../../../models/Main";
 import { formatAmount } from "../../../utils/formatters";
 
-const Summary: React.FC<{ transactionsStatus: Status }> = (props) => {
-  const { transactionsStatus } = props;
+const Summary: React.FC = () => {
+  const transactionsState = useAppSelector(
+    (state) => state.transactions.fetchAllState
+  );
   const summaryData = useAppSelector((state) => state.transactions.summaryData);
 
   let content;
-
-  if (transactionsStatus === "success" && summaryData.transactionsCount > 0) {
+  if (
+    transactionsState.status === "success" &&
+    summaryData.transactionsCount > 0
+  ) {
     content = (
       <fieldset className={styles.summary}>
         <legend className={styles.title}>Podsumowanie</legend>

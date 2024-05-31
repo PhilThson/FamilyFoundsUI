@@ -1,16 +1,20 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit/react";
+import { apiSlice } from "../utils/api/api-slice";
 import transactionSliceReducer from "./transaction-slice";
 import uiSliceReducer from "./ui-slice";
-import categorySliceReducer from "./category-slice";
-import importSourceSliceReducer from "./importSource-slice";
+import authSliceReducer from "./auth-slice";
 
 const store = configureStore({
   reducer: {
+    //tutaj będzie to po prostu api: apiSlice.reducer
+    [apiSlice.reducerPath]: apiSlice.reducer,
     transactions: transactionSliceReducer,
     ui: uiSliceReducer,
-    categories: categorySliceReducer,
-    importSources: importSourceSliceReducer,
+    auth: authSliceReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    // apiSlice generuje domyślny middleware ktory nalezy dodac
+    getDefaultMiddleware().prepend(apiSlice.middleware),
 });
 
 export default store;

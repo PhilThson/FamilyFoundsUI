@@ -1,25 +1,28 @@
 import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
+import { useAppSelector, useAppDispatch } from "../../../hooks/hooks";
+import { uiSliceActions } from "../../../store/ui-slice";
 import Transactions from "./Transactions";
 import TransactionDetails from "../TransactionDetails/TransactionDetails";
 import Spinner from "../../UI/Spinner";
-import { ITransaction, TransactionsAreaProps } from "../../../models/Main";
-import { deleteTransaction } from "../../../store/transaction-actions";
+import { ITransaction } from "../../../models/Main";
+import { useDeleteTransactionMutation } from "../../../store/transaction-slice";
 import AlertDialog from "../../UI/AlertDialog";
 import styles from "./TransactionsArea.module.css";
 
-const TransactionsArea: React.FC<TransactionsAreaProps> = ({
-  transactionsState,
-  transactionsCount,
-}) => {
-  const { status: transactionsStatus, error: transactionsError } =
-    transactionsState;
+const TransactionsArea: React.FC = () => {
+  const { status: fetchAllStatus, error: fetchAllError } = useAppSelector(
+    (state) => state.transactions.fetchAllState
+  );
+  const transactionsCount = useAppSelector(
+    (state) => state.transactions.summaryData.transactionsCount
+  );
+  const dispatch = useAppDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] =
     useState<ITransaction | null>(null);
 
-  const dispatch = useAppDispatch();
+  const [deleteTransaction, { error }] = useDeleteTransactionMutation();
 
   const handleEditTransaction = (transaction: ITransaction) => {
     setSelectedTransaction(transaction);
@@ -31,9 +34,19 @@ const TransactionsArea: React.FC<TransactionsAreaProps> = ({
     setIsAlertOpen(true);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (selectedTransaction) {
-      dispatch(deleteTransaction(selectedTransaction.id));
+      try {
+        await deleteTransaction(selectedTransaction.id).unwrap();
+      } catch (err) {
+        console.error("Wystąpił błąd podczas usuwania transakcji", err);
+        dispatch(
+          uiSliceActions.showNotification({
+            status: "error",
+            message: `Błąd usuwania transakcji. ${JSON.stringify(error)}`,
+          })
+        );
+      }
     } else {
       console.warn("Brak wybranej transakcji do usunięcia");
     }
@@ -47,7 +60,7 @@ const TransactionsArea: React.FC<TransactionsAreaProps> = ({
 
   let content;
 
-  switch (transactionsStatus) {
+  switch (fetchAllStatus) {
     case "pending":
       content = <Spinner text="Pobieranie transakcji..." />;
       break;
@@ -80,7 +93,7 @@ const TransactionsArea: React.FC<TransactionsAreaProps> = ({
       }
       break;
     case "error":
-      content = <p>{transactionsError}</p>;
+      content = <p>{fetchAllError}</p>;
       break;
     default:
       break;

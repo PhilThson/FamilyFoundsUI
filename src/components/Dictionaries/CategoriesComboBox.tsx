@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Spinner from "../UI/Spinner";
 import styles from "./CategoriesComboBox.module.css";
-import { useAppSelector } from "../../hooks/hooks";
-import { ComboBoxProps } from "../../models/Main";
+import { ComboBoxProps, IFetchError } from "../../models/Main";
+import { useGetCategoriesQuery } from "../../utils/api/api-slice";
 
 const CategoriesComboBox: React.FC<ComboBoxProps> = ({
   id,
@@ -13,9 +13,12 @@ const CategoriesComboBox: React.FC<ComboBoxProps> = ({
   onSelectBlur,
 }) => {
   const [isTouched, setIsTouched] = useState<boolean>(false);
-  const categories = useAppSelector((state) => state.categories.categories);
-  const categoriesStatus = useAppSelector((state) => state.categories.status);
-  const categoriesError = useAppSelector((state) => state.categories.error);
+  const {
+    data: categories,
+    isLoading,
+    isSuccess,
+    error,
+  } = useGetCategoriesQuery();
 
   const handleBlur = (event: React.FocusEvent<HTMLElement>) => {
     if (!isTouched) {
@@ -25,9 +28,9 @@ const CategoriesComboBox: React.FC<ComboBoxProps> = ({
   };
 
   let categoriesComboBox;
-  if (categoriesStatus === "pending") {
+  if (isLoading) {
     categoriesComboBox = <Spinner text="Pobieranie kategorii..." size="3rem" />;
-  } else if (categoriesStatus === "success") {
+  } else if (isSuccess) {
     const categoryOptions = categories.map((category) => (
       <option key={category.id} value={category.id}>
         {category.name}
@@ -53,7 +56,10 @@ const CategoriesComboBox: React.FC<ComboBoxProps> = ({
   } else {
     categoriesComboBox = (
       <div>
-        <p className={styles["info-text"]}>{categoriesError}</p>
+        <p className={styles["info-text"]}>
+          Nie udało się pobrać listy kategorii.
+          {(error as IFetchError).error}
+        </p>
       </div>
     );
   }

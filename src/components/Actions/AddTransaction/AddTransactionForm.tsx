@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Modal from "../../UI/Modal";
 import UserInput from "../../UserInputArea/UserInput";
 import styles from "./AddTransactionForm.module.css";
 import { CreateTransactionDto } from "../../../models/Create";
-import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
-import { addNewTransaction } from "../../../store/transaction-actions";
-import { fetchAllCategories } from "../../../store/category-actions";
+import { useAppDispatch } from "../../../hooks/hooks";
+import { useAddTransactionMutation } from "../../../store/transaction-slice";
+import { uiSliceActions } from "../../../store/ui-slice";
 import {
   stringHasValue,
   amountHasValue,
@@ -14,29 +14,30 @@ import {
 } from "../../../utils/validators";
 import CategoriesComboBox from "../../Dictionaries/CategoriesComboBox";
 import CurrencyComboBox from "../../Dictionaries/CurrencyComboBox";
+import { IFetchError } from "../../../models/Main";
+
+const initTransactionState: CreateTransactionDto = {
+  title: "",
+  amount: "",
+  currency: "PLN",
+  account: "",
+  contractor: "",
+  date: new Date().toJSON().slice(0, 10),
+  description: "",
+  postingDate: "",
+  contractorAccountNumber: "",
+  contractorBankName: "",
+  categoryId: "",
+};
 
 const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
   onModalClose,
 }) => {
-  const [transaction, setTransaction] = useState<CreateTransactionDto>({
-    title: "",
-    amount: "",
-    currency: "PLN",
-    account: "",
-    contractor: "",
-    date: new Date().toJSON().slice(0, 10),
-    description: "",
-    postingDate: "",
-    contractorAccountNumber: "",
-    contractorBankName: "",
-    categoryId: "",
-  });
-  const transactionError = useAppSelector(
-    (state) => state.transactions.addNewState.error
-  );
-  const transactionStatus = useAppSelector(
-    (state) => state.transactions.addNewState.status
-  );
+  const [transaction, setTransaction] =
+    useState<CreateTransactionDto>(initTransactionState);
+
+  const [addTransaction, { error, isLoading, isError }] =
+    useAddTransactionMutation();
 
   const [isTouched, setIsTouched] = useState(false);
   const [titleIsValid, setTitleIsValid] = useState(true);
@@ -45,9 +46,7 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
   const [dateIsValid, setDateIsValid] = useState(true);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(fetchAllCategories());
-  }, [dispatch]);
+  const showNotification = uiSliceActions.showNotification;
 
   const handleChange = (event: React.ChangeEvent) => {
     const { id, value } = event.target as HTMLInputElement;
@@ -93,7 +92,7 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
     transactionIsValid = true;
   }
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!transactionIsValid || !newTransactionIsValid(transaction)) {
       validateTransaction("title", transaction.title);
@@ -102,8 +101,24 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
       validateTransaction("date", transaction.date);
       return;
     }
-    console.log("new transaction:", transaction);
-    dispatch(addNewTransaction(transaction));
+    try {
+      await addTransaction(transaction);
+      dispatch(
+        showNotification({
+          status: "success",
+          message: "Dodano transakcję",
+        })
+      );
+      setTransaction(initTransactionState);
+    } catch (err) {
+      console.error("Błąd dodawania transakcji", err);
+      dispatch(
+        showNotification({
+          status: "error",
+          message: "Błąd dodawania transakcji",
+        })
+      );
+    }
   };
 
   return (
@@ -221,14 +236,11 @@ const AddTransactionForm: React.FC<{ onModalClose: Function }> = ({
           </div>
           <div className={styles["input-group"]}></div>
         </div>
-        {transactionStatus === "error" && (
-          <p className={styles["error-text"]}>{transactionError}</p>
+        {isError && (
+          <p className={styles["error-text"]}>{(error as IFetchError).error}</p>
         )}
         <div className={styles["form-actions"]}>
-          <button
-            type="submit"
-            disabled={!transactionIsValid || transactionStatus === "pending"}
-          >
+          <button type="submit" disabled={!transactionIsValid || isLoading}>
             Dodaj
           </button>
         </div>

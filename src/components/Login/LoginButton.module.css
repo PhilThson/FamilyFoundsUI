@@ -1,0 +1,36 @@
+.sticky-header {
+  position: sticky;
+  top: 3rem;
+  width: 100%;
+  max-width: 75rem;
+  display: flex;
+  flex-direction: column;
+  z-index: 3;
+  padding-right: 2rem;
+}
+
+.login-container {
+  align-self: flex-end;
+}
+
+.link-button {
+  background: transparent;
+  border: none;
+  color: #ccc;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.link-button:hover {
+  color: #aaa;
+}
+
+.logged-in {
+  color: #ccc;
+}
+
+.logged-in span {
+  font-style: italic;
+  margin-right: 1rem;
+}

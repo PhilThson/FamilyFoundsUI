@@ -5,14 +5,13 @@ import {
   IActionState,
   ISummaryData,
   ICategorySum,
+  IDateRange,
+  IFetchError,
 } from "../models/Main";
-import {
-  fetchAllTransactions,
-  addNewTransaction,
-  updateTransaction,
-  deleteTransaction,
-  importTransactionsFromCsv,
-} from "./transaction-actions";
+import { apiSlice } from "../utils/api/api-slice";
+import { TRANSACTIONS_URL } from "../settings/constants";
+import { CreateTransactionDto } from "../models/Create";
+import { UpdateTransactionDto } from "../models/Update";
 
 const initActionState: IActionState = {
   status: "idle",
@@ -23,10 +22,6 @@ const initState: ITransactionState = {
   transactions: [],
   isVisible: false,
   fetchAllState: initActionState,
-  addNewState: initActionState,
-  updateState: initActionState,
-  deleteState: initActionState,
-  importState: initActionState,
   summaryData: {
     totalDebit: 0.0,
     totalCredit: 0.0,
@@ -51,39 +46,40 @@ const transactionSlice = createSlice({
     toggle(state) {
       state.isVisible = !state.isVisible;
     },
-    resetNewTransactionStatus(state) {
-      state.addNewState = initActionState;
-    },
+    clearTransactionsState: () => initState,
   },
   extraReducers(builder) {
     builder
-      .addCase(fetchAllTransactions.fulfilled, (state, action) => {
-        state.fetchAllState.status = "success";
-        state.transactions = action.payload;
-        state.summaryData = computeSummary(state.transactions);
-      })
-      .addCase(fetchAllTransactions.pending, (state) => {
-        state.fetchAllState.status = "pending";
-      })
-      .addCase(fetchAllTransactions.rejected, (state, action) => {
-        state.fetchAllState.status = "error";
-        state.fetchAllState.error = action.error.message as string;
-      })
-      .addCase(addNewTransaction.fulfilled, (state, action) => {
-        state.addNewState.status = "success";
-        state.transactions.push(action.payload);
-      })
-      .addCase(addNewTransaction.pending, (state) => {
-        state.addNewState.status = "pending";
-      })
-      .addCase(addNewTransaction.rejected, (state, action) => {
-        state.addNewState.status = "error";
-        state.addNewState.error = action.error.message as string;
-      })
-      .addCase(
-        updateTransaction.fulfilled,
-        (state, action: { payload: ITransaction; type: string }) => {
-          state.updateState.status = "success";
+      .addMatcher(
+        transactionsApiSlice.endpoints.getTransactions.matchFulfilled,
+        (state, action) => {
+          state.transactions = action.payload;
+          state.summaryData = computeSummary(state.transactions);
+          state.fetchAllState.status = "success";
+        }
+      )
+      .addMatcher(
+        transactionsApiSlice.endpoints.getTransactions.matchPending,
+        (state) => {
+          state.fetchAllState.status = "pending";
+        }
+      )
+      .addMatcher(
+        transactionsApiSlice.endpoints.getTransactions.matchRejected,
+        (state, { payload }) => {
+          state.fetchAllState.status = "error";
+          state.fetchAllState.error = (payload as IFetchError).error;
+        }
+      )
+      .addMatcher(
+        transactionsApiSlice.endpoints.addTransaction.matchFulfilled,
+        (state, action) => {
+          state.transactions.push(action.payload);
+        }
+      )
+      .addMatcher(
+        transactionsApiSlice.endpoints.updateTransaction.matchFulfilled,
+        (state, action) => {
           let newTransactionsList = state.transactions.filter(
             (t) => t.id !== action.payload.id
           );
@@ -92,33 +88,15 @@ const transactionSlice = createSlice({
           state.summaryData = computeSummary(newTransactionsList);
         }
       )
-      .addCase(updateTransaction.pending, (state) => {
-        state.updateState.status = "pending";
-      })
-      .addCase(updateTransaction.rejected, (state, action) => {
-        state.updateState.status = "error";
-        state.updateState.error = action.error.message as string;
-      })
-      .addCase(deleteTransaction.fulfilled, (state, action) => {
-        state.deleteState.status = "success";
-        state.transactions = state.transactions.filter(
-          (t) => t.id !== action.payload
-        );
-        state.summaryData = computeSummary(state.transactions);
-      })
-      .addCase(deleteTransaction.rejected, (state) => {
-        state.deleteState.status = "error";
-      })
-      .addCase(importTransactionsFromCsv.fulfilled, (state) => {
-        state.importState.status = "success";
-      })
-      .addCase(importTransactionsFromCsv.pending, (state) => {
-        state.importState.status = "pending";
-      })
-      .addCase(importTransactionsFromCsv.rejected, (state, action) => {
-        state.importState.status = "error";
-        state.importState.error = action.error.message as string;
-      });
+      .addMatcher(
+        transactionsApiSlice.endpoints.deleteTransaction.matchFulfilled,
+        (state, action) => {
+          state.transactions = state.transactions.filter(
+            (t) => t.id !== action.payload
+          );
+          state.summaryData = computeSummary(state.transactions);
+        }
+      );
   },
 });
 
@@ -152,3 +130,62 @@ const computeSummary = (items: ITransaction[]): ISummaryData => {
 
 export const transactionActions = transactionSlice.actions;
 export default transactionSlice.reducer;
+
+export const transactionsApiSlice = apiSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    getTransactions: builder.query<ITransaction[], IDateRange>({
+      query: (dateRange) =>
+        TRANSACTIONS_URL +
+        `?startDate=${dateRange.startDate}&endDate=${dateRange.endDate}`,
+    }),
+    addTransaction: builder.mutation<ITransaction, CreateTransactionDto>({
+      query: (transaction) => {
+        const transactionToSend: CreateTransactionDto = {
+          ...transaction,
+          description: transaction.description || undefined,
+          postingDate: transaction.postingDate || undefined,
+          categoryId: transaction.categoryId || undefined,
+          account: transaction.account || undefined,
+          contractorAccountNumber:
+            transaction.contractorAccountNumber || undefined,
+          contractorBankName: transaction.contractorBankName || undefined,
+        };
+        return {
+          url: TRANSACTIONS_URL,
+          method: "POST",
+          body: transactionToSend,
+        };
+      },
+    }),
+    updateTransaction: builder.mutation<ITransaction, UpdateTransactionDto>({
+      query: (transaction) => ({
+        url: TRANSACTIONS_URL,
+        method: "PUT",
+        body: transaction,
+      }),
+    }),
+    deleteTransaction: builder.mutation<number, number>({
+      query: (id) => ({
+        url: `${TRANSACTIONS_URL}/${id}`,
+        method: "DELETE",
+      }),
+      transformResponse: (result, meta, args) => args,
+    }),
+    importTransactionsFromCsv: builder.mutation<number, FormData>({
+      query: (formData) => ({
+        url: `${TRANSACTIONS_URL}/import`,
+        method: "POST",
+        body: formData,
+        isForm: true,
+      }),
+    }),
+  }),
+});
+
+export const {
+  useLazyGetTransactionsQuery,
+  useAddTransactionMutation,
+  useUpdateTransactionMutation,
+  useDeleteTransactionMutation,
+  useImportTransactionsFromCsvMutation,
+} = transactionsApiSlice;

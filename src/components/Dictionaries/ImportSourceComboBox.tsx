@@ -1,15 +1,16 @@
-import { useAppSelector } from "../../hooks/hooks";
-import { ImportSourceComboBoxProps } from "../../models/Main";
+import { IFetchError, ImportSourceComboBoxProps } from "../../models/Main";
+import { useGetImportSourcesQuery } from "../../utils/api/api-slice";
 import Spinner from "../UI/Spinner";
 
 const ImportSourceComboBox: React.FC<ImportSourceComboBoxProps> = (props) => {
   const { value, onSelectChange } = props;
-  const importSources = useAppSelector(
-    (state) => state.importSources.importSources
-  );
-  const importSourcesState = useAppSelector(
-    (state) => state.importSources.fetchAllState
-  );
+  const {
+    data: importSources,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetImportSourcesQuery();
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
@@ -18,14 +19,11 @@ const ImportSourceComboBox: React.FC<ImportSourceComboBoxProps> = (props) => {
   };
 
   let importSourcesComboBox;
-  if (importSourcesState.status === "pending") {
+  if (isLoading) {
     importSourcesComboBox = (
       <Spinner text="Pobieranie źródeł importu..." size="3rem" />
     );
-  } else if (
-    importSourcesState.status === "success" &&
-    importSources.length > 0
-  ) {
+  } else if (isSuccess && importSources.length > 0) {
     const importSourceOptions = importSources.map((importSource) => (
       <option key={importSource.id} value={importSource.id}>
         {importSource.name}
@@ -42,10 +40,14 @@ const ImportSourceComboBox: React.FC<ImportSourceComboBoxProps> = (props) => {
         </select>
       </div>
     );
-  } else if (importSourcesState.status === "error") {
+  } else if (isError) {
+    console.error(
+      "Wystąpił błąd podczas pobierania listy źródeł importu.",
+      error
+    );
     importSourcesComboBox = (
       <div>
-        <p className="error-text">{importSourcesState.error}</p>
+        <p className="error-text">{(error as IFetchError).error}</p>
       </div>
     );
   } else {

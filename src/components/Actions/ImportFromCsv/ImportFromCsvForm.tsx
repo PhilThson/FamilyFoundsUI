@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Modal from "../../UI/Modal";
-import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
-import { importTransactionsFromCsv } from "../../../store/transaction-actions";
+import { useAppDispatch } from "../../../hooks/hooks";
 import styles from "./ImportFromCsvForm.module.css";
 import ImportSourceComboBox from "../../Dictionaries/ImportSourceComboBox";
-import { fetchAllImportSources } from "../../../store/importSource-actions";
 import Spinner from "../../UI/Spinner";
+import { useImportTransactionsFromCsvMutation } from "../../../store/transaction-slice";
+import { uiSliceActions } from "../../../store/ui-slice";
 
 const ImportFromCsvForm: React.FC<{ onImportClose: () => void }> = ({
   onImportClose,
@@ -13,13 +13,10 @@ const ImportFromCsvForm: React.FC<{ onImportClose: () => void }> = ({
   const [file, setFile] = useState<File | null>(null);
   const [importSourceId, setImportSourceId] = useState<number | null>(null);
   const [isInfoVisible, setIsInfoVisible] = useState<boolean>(false);
+  const [importTransactionsFromCsv, { error, isError, isLoading }] =
+    useImportTransactionsFromCsvMutation();
 
   const dispatch = useAppDispatch();
-  const importState = useAppSelector((state) => state.transactions.importState);
-
-  useEffect(() => {
-    dispatch(fetchAllImportSources());
-  }, [dispatch]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -39,7 +36,7 @@ const ImportFromCsvForm: React.FC<{ onImportClose: () => void }> = ({
     }
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!file || !importSourceId) {
       console.error("Nie wskazano pliku lub źródła importu");
@@ -49,7 +46,17 @@ const ImportFromCsvForm: React.FC<{ onImportClose: () => void }> = ({
     formData.append("file", file);
     formData.append("importSourceId", importSourceId.toString());
 
-    dispatch(importTransactionsFromCsv(formData));
+    try {
+      const data = await importTransactionsFromCsv(formData).unwrap();
+      dispatch(
+        uiSliceActions.showNotification({
+          status: "success",
+          message: `Zaimportowano ${data} transakcje!`,
+        })
+      );
+    } catch (err) {
+      console.error("Błąd importu transakcji", err);
+    }
   };
 
   return (
@@ -75,19 +82,15 @@ const ImportFromCsvForm: React.FC<{ onImportClose: () => void }> = ({
             />
           </div>
         </div>
-        {importState.status === "error" && (
-          <p className="error-text">{importState.error}</p>
-        )}
+        {isError && <p className="error-text">{JSON.stringify(error)}</p>}
         {isInfoVisible && <p className="info-text">Należy wskazać plik .csv</p>}
-        {importState.status === "pending" && (
+        {isLoading && (
           <Spinner text="Trwa importowanie transakcji..." size="3rem" />
         )}
         <div className={styles["form-actions"]}>
           <button
             type="submit"
-            disabled={
-              !file || !importSourceId || importState.status === "pending"
-            }
+            disabled={!file || !importSourceId || isLoading}
           >
             Importuj
           </button>

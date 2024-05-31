@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { useAppDispatch } from "../../hooks/hooks";
 import UserInput from "./UserInput";
-import styles from "./UserInputArea.module.css";
-import { fetchAllTransactions } from "../../store/transaction-actions";
 import { IDateRange } from "../../models/Main";
+import { useLazyGetTransactionsQuery } from "../../store/transaction-slice";
+import styles from "./UserInputArea.module.css";
 
 const currentDate = new Date();
 const oneMonthAgo = new Date();
@@ -15,9 +14,9 @@ const INIT_DATERANGE: IDateRange = {
 };
 
 const UserInputArea = () => {
-  const dispatch = useAppDispatch();
   const [dateRange, setDateRange] = useState(INIT_DATERANGE);
   const [isValidRange, setIsValidRange] = useState(true);
+  const [getTransactions] = useLazyGetTransactionsQuery();
 
   const handleInputChange = (e: React.ChangeEvent) => {
     const { id, value } = e.target as HTMLInputElement;
@@ -30,8 +29,12 @@ const UserInputArea = () => {
     setIsValidRange(isValid);
   };
 
-  const handleSearchClick = () => {
-    dispatch(fetchAllTransactions(dateRange));
+  const handleSearchClick = async () => {
+    try {
+      await getTransactions(dateRange).unwrap();
+    } catch (err) {
+      console.error("Wystąpił błąd podczas pobierania transakcji", err);
+    }
   };
 
   return (

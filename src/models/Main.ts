@@ -1,3 +1,31 @@
+export interface IApiError {
+  message?: string;
+}
+
+export interface IFetchError {
+  status: string;
+  error: string;
+}
+
+export interface ApiClientResponse {
+  status: number;
+  data: any;
+  headers: Headers;
+  url: string;
+}
+
+export type QueryReturnValue<T = unknown, E = unknown, M = unknown> =
+  | {
+      error: E;
+      data?: undefined;
+      meta?: M;
+    }
+  | {
+      error?: undefined;
+      data: T;
+      meta?: M;
+    };
+
 export interface ITransaction {
   id: number;
   title: string;
@@ -17,16 +45,29 @@ export interface ITransactionState {
   transactions: ITransaction[];
   isVisible: boolean;
   fetchAllState: IActionState;
-  addNewState: IActionState;
-  updateState: IActionState;
-  deleteState: IActionState;
-  importState: IActionState;
   summaryData: ISummaryData;
 }
 
 export interface IActionState {
   status: Status;
   error: string | null;
+}
+
+export interface IAuthState {
+  name: null | string;
+  email: null | string;
+  accessToken: null | string;
+  isLoggedIn: boolean;
+}
+
+export interface IAuthenticateRequest {
+  email: string;
+  password: string;
+}
+
+export interface IAuthenticateResponse {
+  jwtToken: string;
+  refreshToken: string;
 }
 
 export interface ISummaryData {
@@ -48,14 +89,14 @@ export type NotificationTitle = "Brak" | "Błąd" | "Ładowanie" | "Sukces";
 export const currencies = ["PLN", "USD", "EUR"] as const;
 export type Currency = (typeof currencies)[number];
 
-export class Notification {
-  status: Status = "idle";
-  title: NotificationTitle = "Brak";
+export interface INotification {
+  status: Status;
+  title?: NotificationTitle;
   message?: string;
 }
 
 export class NotificationState {
-  notification?: Notification;
+  notification?: INotification;
 }
 
 export class DateRange {
@@ -75,8 +116,6 @@ export interface ICategory {
 
 export class CategoryState {
   categories: ICategory[] = [];
-  status: Status = "idle";
-  error: string | null = null;
 }
 
 export interface IImportSource {
