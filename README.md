@@ -2,6 +2,9 @@
 
 User interface for Family Founds application written in JavaScript and Typescript using React.
 
+- [Backend API](https://github.com/PhilThson/FamilyFoundsAPI)
+- [Authentication service](https://github.com/PhilThson/Authentication)
+
 v1:
 - Importing transactions from two sources in csv format.
 - Adding/Editing/Deleting transaction.
