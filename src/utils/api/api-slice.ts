@@ -36,21 +36,20 @@ const baseFetch: BaseQueryFn = async (args, api, extraOptions) => {
   const dispatch = api.dispatch;
 
   let result = await baseQuery(args, api, extraOptions);
+
   if (result?.error?.status === 401 && authState.isLoggedIn) {
-    const refreshResult = await baseQuery(
-      { url: REFRESH_TOKEN_URL, method: "POST" },
-      api,
-      extraOptions
-    );
-    if (refreshResult?.error) {
+    try {
+      const refreshResult = await dispatch(
+        apiSlice.endpoints.refreshToken.initiate()
+      ).unwrap();
+
+      dispatch(authSliceActions.updateLoginState(refreshResult));
+
+      result = await baseQuery(args, api, extraOptions);
+    } catch (err) {
+      console.error("Refresh token failed", err);
       dispatch(authSliceActions.clearLoginState());
       dispatch(transactionActions.clearTransactionsState());
-    } else if (refreshResult.data) {
-      const authResponse = refreshResult.data as IAuthenticateResponse;
-      if (authResponse) {
-        dispatch(authSliceActions.updateLoginState(authResponse));
-        result = await baseQuery(args, api, extraOptions);
-      }
     }
   }
 
@@ -88,10 +87,17 @@ export const apiSlice = createApi({
     getCategories: builder.query<ICategory[], void>({
       query: () => CATEGORIES_URL,
     }),
+    refreshToken: builder.mutation<IAuthenticateResponse, void>({
+      query: () => ({
+        url: REFRESH_TOKEN_URL,
+        method: "POST",
+      }),
+    }),
   }),
 });
 
 export const {
   useGetImportSourcesQuery, //hook generowany automatycznie
   useGetCategoriesQuery,
+  useRefreshTokenMutation,
 } = apiSlice;

@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit/react";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
 import {
   IAuthState,
@@ -6,20 +6,51 @@ import {
   IAuthenticateResponse,
 } from "../models/Main";
 import { apiSlice } from "../utils/api/api-slice";
-import { AUTH_URL } from "../settings/constants";
+import { AUTH_URL, REFRESH_TOKEN_URL } from "../settings/constants";
 
-const initState: IAuthState = {
-  name: null,
-  email: null,
-  accessToken: null,
-  isLoggedIn: false,
+interface JwtPayload {
+  sub?: string;
+  exp: number;
+}
+
+const getInitState = (): IAuthState => {
+  let initState: IAuthState = {
+    name: null,
+    email: null,
+    accessToken: "",
+    isLoggedIn: false,
+  };
+
+  const accessTokenMemo = localStorage.getItem("accessToken");
+  if (accessTokenMemo) {
+    const { sub } = jwtDecode<JwtPayload>(accessTokenMemo);
+    initState.name = sub || "";
+    initState.accessToken = accessTokenMemo;
+    initState.isLoggedIn = true;
+  }
+
+  return initState;
+};
+
+const setAuthState = (
+  state: IAuthState,
+  authResponse: IAuthenticateResponse
+) => {
+  state.accessToken = authResponse.jwtToken;
+  state.isLoggedIn = true;
+  localStorage.setItem("accessToken", authResponse.jwtToken);
+  const { sub } = jwtDecode<JwtPayload>(authResponse.jwtToken);
+  state.name = sub || "";
 };
 
 const auth = createSlice({
   name: "auth",
-  initialState: initState,
+  initialState: getInitState(),
   reducers: {
-    clearLoginState: () => initState,
+    clearLoginState: () => {
+      localStorage.removeItem("accessToken");
+      return getInitState();
+    },
     updateLoginState(state, action: PayloadAction<IAuthenticateResponse>) {
       setAuthState(state, action.payload);
     },
@@ -34,19 +65,10 @@ const auth = createSlice({
   },
 });
 
-const setAuthState = (
-  state: IAuthState,
-  authResponse: IAuthenticateResponse
-) => {
-  state.accessToken = authResponse.jwtToken;
-  state.isLoggedIn = true;
-  const { sub } = jwtDecode(authResponse.jwtToken);
-  state.name = sub || "";
-};
-
 export default auth.reducer;
+export const { clearLoginState, updateLoginState } = auth.actions;
 
-const authApiSlice = apiSlice.injectEndpoints({
+export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<IAuthenticateResponse, IAuthenticateRequest>({
       query: (credentials) => ({
@@ -55,9 +77,13 @@ const authApiSlice = apiSlice.injectEndpoints({
         body: credentials,
       }),
     }),
+    refreshToken: builder.mutation<IAuthenticateResponse, void>({
+      query: () => ({
+        url: REFRESH_TOKEN_URL,
+        method: "POST",
+      }),
+    }),
   }),
 });
 
-export const {
-  useLoginMutation, //automatycznie generowany hook
-} = authApiSlice;
+export const { useLoginMutation } = authApiSlice;

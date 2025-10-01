@@ -9,6 +9,7 @@ import { useLoginMutation } from "../../store/auth-slice";
 import styles from "./LoginForm.module.css";
 import Spinner from "../UI/Spinner";
 import { uiSliceActions } from "../../store/ui-slice";
+import { scheduleTokenRefresh } from "../../utils/api/refresh-token";
 
 const initLoginData = {
   email: "",
@@ -86,7 +87,8 @@ const LoginForm: React.FC<{
       password: sha256(loginData.password + "/T}qRj&)T-89i}").toString(),
     };
     try {
-      await logIn(authRequest).unwrap();
+      const authResponse = await logIn(authRequest).unwrap();
+      scheduleTokenRefresh(authResponse.jwtToken, dispatch);
       dispatch(
         uiSliceActions.showNotification({
           status: "success",
