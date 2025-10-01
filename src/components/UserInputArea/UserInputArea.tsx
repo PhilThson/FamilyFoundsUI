@@ -1,8 +1,12 @@
 import { useState } from "react";
 import UserInput from "./UserInput";
 import { IDateRange } from "../../models/Main";
-import { useLazyGetTransactionsQuery } from "../../store/transaction-slice";
+import {
+  transactionActions,
+  useLazyGetTransactionsQuery,
+} from "../../store/transaction-slice";
 import styles from "./UserInputArea.module.css";
+import { useDispatch } from "react-redux";
 
 const currentDate = new Date();
 const oneMonthAgo = new Date();
@@ -14,9 +18,10 @@ const INIT_DATERANGE: IDateRange = {
 };
 
 const UserInputArea = () => {
-  const [dateRange, setDateRange] = useState(INIT_DATERANGE);
+  const [dateRange, setDateRange] = useState<IDateRange>(INIT_DATERANGE);
   const [isValidRange, setIsValidRange] = useState(true);
   const [getTransactions] = useLazyGetTransactionsQuery();
+  const dispatch = useDispatch();
 
   const handleInputChange = (e: React.ChangeEvent) => {
     const { id, value } = e.target as HTMLInputElement;
@@ -31,6 +36,7 @@ const UserInputArea = () => {
 
   const handleSearchClick = async () => {
     try {
+      dispatch(transactionActions.setDateRange(dateRange));
       await getTransactions(dateRange).unwrap();
     } catch (err) {
       console.error("Wystąpił błąd podczas pobierania transakcji", err);

@@ -27,22 +27,20 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.2rem;
-  /* border-bottom: 1px solid black; */
+  margin-bottom: 0.3rem;
   border: 1px solid black;
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.7);
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
   border-radius: 0.5rem;
   width: 40rem;
   padding: 0.75rem;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
 .summary li:hover {
-  box-shadow: 5px 5px 10px #08452d;
-}
-
-.hr {
-  border-top: 8px solid #bbb;
-  margin: 0.25rem 0;
+  box-shadow: 4px 6px 12px rgba(0, 128, 64, 0.6);
+  transform: translateY(-2px) translateX(-2px);
 }
 
 .total-debit {

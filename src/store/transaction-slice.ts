@@ -1,10 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   ITransactionState,
   ITransaction,
   IActionState,
-  ISummaryData,
-  ICategorySum,
   IDateRange,
   IFetchError,
 } from "../models/Main";
@@ -12,11 +10,16 @@ import { apiSlice } from "../utils/api/api-slice";
 import { TRANSACTIONS_URL } from "../settings/constants";
 import { CreateTransactionDto } from "../models/Create";
 import { UpdateTransactionDto } from "../models/Update";
+import { ICategorySum, ISummaryData } from "../models/Summary";
 
 const initActionState: IActionState = {
   status: "idle",
   error: null,
 };
+
+const currentDate = new Date();
+const oneMonthAgo = new Date();
+oneMonthAgo.setMonth(currentDate.getMonth() - 1);
 
 const initState: ITransactionState = {
   transactions: [],
@@ -28,6 +31,16 @@ const initState: ITransactionState = {
     balance: 0.0,
     categoriesCount: [],
     transactionsCount: 0,
+    averagePerMonth: {
+      totalDebit: 0,
+      totalCredit: 0,
+      balance: 0,
+      categoriesCount: [],
+    },
+  },
+  dateRange: {
+    startDate: oneMonthAgo.toISOString().slice(0, 10),
+    endDate: currentDate.toISOString().slice(0, 10),
   },
 };
 
@@ -39,9 +52,12 @@ const transactionSlice = createSlice({
       state,
       action: { payload: ITransaction[]; type: string }
     ) {
-      if (action.payload && action.payload.length > 0) {
-        state.transactions = action.payload;
-      }
+      state.transactions = action.payload;
+      state.summaryData = computeSummary(state.transactions, state.dateRange);
+    },
+    setDateRange(state, action: PayloadAction<IDateRange>) {
+      state.dateRange = action.payload;
+      state.summaryData = computeSummary(state.transactions, state.dateRange);
     },
     toggle(state) {
       state.isVisible = !state.isVisible;
@@ -54,7 +70,10 @@ const transactionSlice = createSlice({
         transactionsApiSlice.endpoints.getTransactions.matchFulfilled,
         (state, action) => {
           state.transactions = action.payload;
-          state.summaryData = computeSummary(state.transactions);
+          state.summaryData = computeSummary(
+            state.transactions,
+            state.dateRange
+          );
           state.fetchAllState.status = "success";
         }
       )
@@ -85,7 +104,10 @@ const transactionSlice = createSlice({
           );
           newTransactionsList.push(action.payload);
           state.transactions = newTransactionsList;
-          state.summaryData = computeSummary(newTransactionsList);
+          state.summaryData = computeSummary(
+            newTransactionsList,
+            state.dateRange
+          );
         }
       )
       .addMatcher(
@@ -94,16 +116,46 @@ const transactionSlice = createSlice({
           state.transactions = state.transactions.filter(
             (t) => t.id !== action.payload
           );
-          state.summaryData = computeSummary(state.transactions);
+          state.summaryData = computeSummary(
+            state.transactions,
+            state.dateRange
+          );
         }
       );
   },
 });
 
-const computeSummary = (items: ITransaction[]): ISummaryData => {
+const computeSummary = (
+  items: ITransaction[],
+  dateRange: IDateRange
+): ISummaryData => {
   let totalDebit = 0;
   let totalCredit = 0;
   const categoriesCount: { [name: string]: ICategorySum } = {};
+
+  if (items.length === 0) {
+    return {
+      totalDebit: 0,
+      totalCredit: 0,
+      balance: 0,
+      categoriesCount: [],
+      transactionsCount: 0,
+      averagePerMonth: {
+        totalDebit: 0,
+        totalCredit: 0,
+        balance: 0,
+        categoriesCount: [],
+      },
+    };
+  }
+
+  const startDate = new Date(dateRange.startDate);
+  const endDate = new Date(dateRange.endDate);
+  const months =
+    (endDate.getFullYear() - startDate.getFullYear()) * 12 +
+    (endDate.getMonth() - startDate.getMonth()) +
+    1;
+
   items.forEach((item) => {
     if (item.amount < 0) {
       totalDebit += item.amount;
@@ -118,13 +170,26 @@ const computeSummary = (items: ITransaction[]): ISummaryData => {
       totalCredit += item.amount;
     }
   });
+
   const balance = totalDebit + totalCredit;
+
+  const avgCategories = Object.values(categoriesCount).map((c) => ({
+    ...c,
+    amount: c.amount / months,
+  }));
+
   return {
     totalDebit,
     totalCredit,
     balance,
     categoriesCount: Object.values(categoriesCount),
     transactionsCount: items.length,
+    averagePerMonth: {
+      totalDebit: totalDebit / months,
+      totalCredit: totalCredit / months,
+      balance: balance / months,
+      categoriesCount: avgCategories,
+    },
   };
 };
 

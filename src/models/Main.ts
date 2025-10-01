@@ -1,3 +1,5 @@
+import { ISummaryData } from "./Summary";
+
 export interface IApiError {
   message?: string;
 }
@@ -46,6 +48,7 @@ export interface ITransactionState {
   isVisible: boolean;
   fetchAllState: IActionState;
   summaryData: ISummaryData;
+  dateRange: IDateRange;
 }
 
 export interface IActionState {
@@ -68,19 +71,6 @@ export interface IAuthenticateRequest {
 export interface IAuthenticateResponse {
   jwtToken: string;
   refreshToken: string;
-}
-
-export interface ISummaryData {
-  totalDebit: number;
-  totalCredit: number;
-  balance: number;
-  categoriesCount: ICategorySum[];
-  transactionsCount: number;
-}
-
-export interface ICategorySum {
-  name: string;
-  amount: number;
 }
 
 export type Status = "idle" | "error" | "pending" | "success";
