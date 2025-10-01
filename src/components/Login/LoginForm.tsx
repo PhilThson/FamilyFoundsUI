@@ -93,6 +93,7 @@ const LoginForm: React.FC<{
           message: "Zalogowano!",
         })
       );
+      onClose();
     } catch (err) {
       console.error("Wystąpił błąd podczas logowania.", err);
     }

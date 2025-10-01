@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Modal from "../../UI/Modal";
 import styles from "./TransactionDetails.module.css";
 import Property from "./Property";
@@ -23,21 +23,26 @@ const TransactionDetails: React.FC<ITransactionDetailsProps> = ({
   const [updateTransaction, { isLoading, isError, error }] =
     useUpdateTransactionMutation();
 
-  const [updatedTransaction, setUpdatedTransaction] =
-    useState<UpdateTransactionDto>({
+  const initialTransaction: UpdateTransactionDto = useMemo(
+    () => ({
       id: transaction.id,
       title: transaction.title,
       contractor: transaction.contractor,
       account: transaction.account,
-      amount: transaction.amount.toString(),
+      amount: transaction.amount.toFixed(2).toString(),
       currency: transaction.currency,
       description: transaction.description,
-      date: transaction.date,
-      postingDate: transaction.postingDate,
+      date: transaction.date.slice(0, 10),
+      postingDate: transaction.postingDate?.slice(0, 10),
       categoryId: transaction.category?.id,
       contractorAccountNumber: transaction.contractorAccountNumber,
       contractorBankName: transaction.contractorBankName,
-    });
+    }),
+    [transaction]
+  );
+
+  const [updatedTransaction, setUpdatedTransaction] =
+    useState<UpdateTransactionDto>(initialTransaction);
 
   const handlePropertyChange = (name: string, value: string) => {
     setUpdatedTransaction((previous) => ({
@@ -55,6 +60,7 @@ const TransactionDetails: React.FC<ITransactionDetailsProps> = ({
           message: "Zaktualizowano transakcję",
         })
       );
+      onClose();
     } catch (err) {
       console.error(err);
       dispatch(
@@ -65,6 +71,15 @@ const TransactionDetails: React.FC<ITransactionDetailsProps> = ({
       );
     }
   };
+
+  const hasChanges = useMemo(() => {
+    console.log("Init tran:", JSON.stringify(initialTransaction));
+    console.log("Updated tran:", JSON.stringify(updatedTransaction));
+    const hasChanges =
+      JSON.stringify(initialTransaction) !== JSON.stringify(updatedTransaction);
+    console.log("Has changes? ", hasChanges);
+    return hasChanges;
+  }, [initialTransaction, updatedTransaction]);
 
   return (
     <Modal onCloseModal={onClose}>
@@ -153,7 +168,7 @@ const TransactionDetails: React.FC<ITransactionDetailsProps> = ({
         <button
           className={styles["button-save"]}
           onClick={handleSaveTransaction}
-          disabled={isLoading}
+          disabled={isLoading || !hasChanges}
         >
           Zapisz
         </button>

@@ -67,6 +67,21 @@
   color: white;
 }
 
+.actions .button-save:disabled {
+  background-color: #a0a0a0;
+  color: #e0e0e0;
+  border-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.actions .button-save:not(:disabled):hover,
+.actions .button-save:not(:disabled):active {
+  background-color: #003e25;
+  border-color: #39443f;
+  color: white;
+}
+
 .error-text {
   color: crimson;
   font-weight: bold;
